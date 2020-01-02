@@ -39,8 +39,6 @@ namespace BugTrackerV1._0
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 4;
-                options.Password.RequireDigit = false;
-                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             })
             .AddRoles<IdentityRole>()

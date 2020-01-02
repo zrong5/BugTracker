@@ -1,6 +1,3 @@
-DROP DATABASE IF EXISTS IdentityRoleDev;
-CREATE DATABASE IdentityRoleDev;
-USE IdentityRoleDev;
 
 CREATE TABLE [dbo].[User] (
     [Id]            INT             IDENTITY (1, 1) NOT NULL,

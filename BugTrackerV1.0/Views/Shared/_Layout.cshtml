@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,6 +30,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-controller="Bug" asp-action="Index">Bugs</a>
                         </li>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "Add Role")).Succeeded)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-controller="Identity" asp-action="ManageRoles">Manage Roles</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
