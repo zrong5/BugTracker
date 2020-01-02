@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                    <img class="card-img-top" src="~/images/submission.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Submission</h5>
+                        <p class="card-text">Submit a new bug or issue using this page.</p>
+                    </div>
+                    <div class="card-body">
+                        <a class="card-link" asp-controller="Submission" asp-action="Index">Submit Bug</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                    <img class="card-img-top" src="~/images/bugs.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Bugs</h5>
+                        <p class="card-text">View and modify active bugs on this page.</p>
+                    </div>
+                    <div class="card-body">
+                        <a class="card-link" asp-controller="Bug" asp-action="Index">View Bugs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                    <img class="card-img-top" src="~/images/metrics.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Bug History</h5>
+                        <p class="card-text">View and modify closed bugs on this page.</p>
+                    </div>
+                    <div class="card-body">
+                        <a class="card-link">View Bug History</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        
