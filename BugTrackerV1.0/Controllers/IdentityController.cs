@@ -57,36 +57,40 @@ namespace BugTrackerV1._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            var username = model.Username;
-            var password = model.Password;
             //var role = "Admin";
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
                 {
-                    UserName = username,
+                    UserName = model.Username,
                     Email = model.Email
                 };
-                var result = await _userManager.CreateAsync(user, password);
 
-                if (result.Succeeded)
+                var emailUnique = await _userManager.FindByNameAsync(user.UserName);
+                var usernameUnique = await _userManager.FindByEmailAsync(user.Email);
+
+                if(emailUnique == null && usernameUnique == null)
                 {
-                    //var currentUser = await _userManager.FindByEmailAsync(user.Email);
-
-                    //// create role if it doesn't exists
-                    //var roleResult = await _roleManager.FindByNameAsync(role);
-                    //if (roleResult == null)
-                    //{
-                    //    var adminRole = new IdentityRole(role);
-                    //    await _roleManager.CreateAsync(adminRole);
-                    //    // await _roleManager.AddClaimAsync(adminRole, new Claim("Can add roles", "add.role"));
-                    //}
-                    //await _userManager.AddToRoleAsync(currentUser, role);
-
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
-                    if (signInResult.Succeeded)
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        //var currentUser = await _userManager.FindByEmailAsync(user.Email);
+
+                        //// create role if it doesn't exists
+                        //var roleResult = await _roleManager.FindByNameAsync(role);
+                        //if (roleResult == null)
+                        //{
+                        //    var adminRole = new IdentityRole(role);
+                        //    await _roleManager.CreateAsync(adminRole);
+                        //    // await _roleManager.AddClaimAsync(adminRole, new Claim("Can add roles", "add.role"));
+                        //}
+                        //await _userManager.AddToRoleAsync(currentUser, role);
+
+                        var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                        if (signInResult.Succeeded)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
             }
@@ -99,6 +103,7 @@ namespace BugTrackerV1._0.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult ManageRoles()
         {
             var model = new ManageRolesIndexModel
