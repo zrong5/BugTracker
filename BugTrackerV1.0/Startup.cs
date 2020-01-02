@@ -40,6 +40,8 @@ namespace BugTrackerV1._0
             {
                 options.Password.RequiredLength = 4;
                 options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
             })
             .AddRoles<IdentityRole>()
             .AddRoleManager<RoleManager<IdentityRole>>()
@@ -48,7 +50,7 @@ namespace BugTrackerV1._0
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Add Role", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("Manage Role", policy => policy.RequireRole("Admin"));
                 // options.AddPolicy("Add Role", policy => policy.RequireClaim("Can add roles", "add.role"));
             });
 

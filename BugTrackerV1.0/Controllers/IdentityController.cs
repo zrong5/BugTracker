@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BugTrackerV1._0.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
@@ -29,14 +30,14 @@ namespace BugTrackerV1._0.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(username);
+                var user = await _userManager.FindByNameAsync(model.Username);
                 if (user != null)
                 {
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                     if (signInResult.Succeeded)
                     {
                         return RedirectToAction("Index", "Home");
@@ -58,28 +59,29 @@ namespace BugTrackerV1._0.Controllers
         {
             var username = model.Username;
             var password = model.Password;
+            //var role = "Admin";
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser
                 {
                     UserName = username,
-                    Email = "userEmail@asp.net"
+                    Email = model.Email
                 };
                 var result = await _userManager.CreateAsync(user, password);
 
                 if (result.Succeeded)
                 {
-                    var currentUser = await _userManager.FindByEmailAsync(user.Email);
+                    //var currentUser = await _userManager.FindByEmailAsync(user.Email);
 
-                    // create role if it doesn't exists
-                    // var roleResult = await _roleManager.FindByNameAsync(role);
-                    // if (roleResult == null)
-                    // {
-                        // var adminRole = new IdentityRole(role);
-                        // await _roleManager.CreateAsync(adminRole);
-                        //await _roleManager.AddClaimAsync(adminRole, new Claim("Can add roles", "add.role"));
-                    // }
-                    // await _userManager.AddToRoleAsync(currentUser, role);
+                    //// create role if it doesn't exists
+                    //var roleResult = await _roleManager.FindByNameAsync(role);
+                    //if (roleResult == null)
+                    //{
+                    //    var adminRole = new IdentityRole(role);
+                    //    await _roleManager.CreateAsync(adminRole);
+                    //    // await _roleManager.AddClaimAsync(adminRole, new Claim("Can add roles", "add.role"));
+                    //}
+                    //await _userManager.AddToRoleAsync(currentUser, role);
 
                     var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
                     if (signInResult.Succeeded)
@@ -94,6 +96,26 @@ namespace BugTrackerV1._0.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ManageRoles()
+        {
+            var model = new ManageRolesIndexModel
+            {
+                Usernames = _userManager.Users.Select(user => user.UserName).ToList(),
+                Roles = _roleManager.Roles.Select(role => role.Name).ToList()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageRoles(ManageRolesIndexModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.User);
+            await _userManager.AddToRoleAsync(user, model.Role);
             return RedirectToAction("Index", "Home");
         }
     }
