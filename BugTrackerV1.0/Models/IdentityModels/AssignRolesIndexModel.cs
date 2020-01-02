@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BugTrackerV1._0.Models.IdentityModels
 {
-    public class ManageRolesIndexModel
+    public class AssignRolesIndexModel
     {
         public string User { get; set; }
         public string Role { get; set; }
