@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,11 +27,39 @@ namespace BugTrackerV1._0
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
             services.AddSingleton(Configuration);
             services.AddScoped<IBug, BugService>();
+
             services.AddDbContext<TrackerContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
+
+            services.AddDbContext<IdentityContext>(options
+                => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 4;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            })
+            .AddRoles<IdentityRole>()
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<IdentityContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Add Role", policy => policy.RequireRole("Admin"));
+                // options.AddPolicy("Add Role", policy => policy.RequireClaim("Can add roles", "add.role"));
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "Identity.Cookie";
+                options.LoginPath = "/Home/Login";
+            });
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +79,7 @@ namespace BugTrackerV1._0
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
