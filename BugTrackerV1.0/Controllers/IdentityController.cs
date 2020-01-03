@@ -99,7 +99,7 @@ namespace BugTrackerV1._0.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Identity");
         }
 
         [Authorize(Roles = "Admin")]
