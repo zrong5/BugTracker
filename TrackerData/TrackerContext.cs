@@ -5,7 +5,7 @@ namespace TrackerData
 {
     public class TrackerContext : DbContext
     {
-        public TrackerContext(DbContextOptions options) : base(options) { }
+        public TrackerContext(DbContextOptions<TrackerContext> options) : base(options) { }
         public DbSet<Bug> Bug { get; set; }
         public DbSet<Project> Project { get; set; }
         public DbSet<Status> Status { get; set; }
