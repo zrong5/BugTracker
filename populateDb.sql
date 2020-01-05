@@ -1,11 +1,11 @@
 use TrackerDev;
 insert into 
-Team (Name) 
+Team (Id, Name) 
 values
-('Front-End'),
-('Back-End'),
-('DevOps'),
-('DBA');
+(NEWID(), 'Front-End'),
+(NEWID(), 'Back-End'),
+(NEWID(), 'DevOps'),
+(NEWID(), 'DBA');
 
 insert into
 ProcessLog(Detail)

@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BugTrackerV1._0.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TrackerData;
 using TrackerData.Models;
 
 namespace BugTrackerV1._0.Controllers
@@ -12,15 +14,18 @@ namespace BugTrackerV1._0.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly IBug _bug;
         public IdentityController(
+            IBug bug,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
+            _bug = bug;
         }
         public IActionResult Login()
         {
@@ -49,13 +54,21 @@ namespace BugTrackerV1._0.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var optionsModel = new RegisterOptionsModel
+            {
+                TeamOptions = _bug.GetAllTeams()
+            };
+            var model = new RegisterIndexModel
+            {
+                Options = optionsModel
+            };
+            return View(model);
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterIndexModel model)
         {
             //var role = "Admin";
             if (ModelState.IsValid)
@@ -63,7 +76,8 @@ namespace BugTrackerV1._0.Controllers
                 var user = new ApplicationUser
                 {
                     UserName = model.Username,
-                    Email = model.Email
+                    Email = model.Email,
+                    Team = _bug.GetTeamByName(model.Team)
                 };
 
                 var emailUnique = await _userManager.FindByNameAsync(user.UserName);
@@ -138,7 +152,7 @@ namespace BugTrackerV1._0.Controllers
                 var roleResult = await _roleManager.FindByNameAsync(roleName);
                 if (roleResult == null)
                 {
-                    var newRole = new IdentityRole(roleName);
+                    var newRole = new IdentityRole<Guid>(roleName);
                     await _roleManager.CreateAsync(newRole);
                 }
             }
