@@ -15,26 +15,26 @@
                 <p class="lead">@Model.Title</p>
             </div>
             <div class="form-group">
-                <label for="BugTitle">Bug Title</label>
-                <p class="lead">@Model.CreatedOn</p>
-            </div>
-            <div class="form-group">
                 <label for="BugTitle">Assigned To</label>
                 <p class="lead">@Model.Team</p>
             </div>
             <div class="form-group">
-                <label for="BugTitle">Bug Title</label>
+                <label for="BugTitle">Created On</label>
+                <p class="lead">@Model.CreatedOn</p>
+            </div>
+            <div class="form-group">
+                <label for="BugTitle">Created By</label>
                 <p class="lead">@Model.CreatedBy</p>
             </div>
             @if (string.IsNullOrWhiteSpace(Model.ClosedBy) && Model.ClosedOn != null)
             {
                 <div class="form-group">
-                    <label for="BugTitle">Closed By</label>
-                    <p class="lead">@Model.ClosedBy</p>
-                </div>
-                <div class="form-group">
                     <label for="BugTitle">Closed On</label>
                     <p class="lead">@Model.ClosedOn</p>
+                </div>
+                <div class="form-group">
+                    <label for="BugTitle">Closed By</label>
+                    <p class="lead">@Model.ClosedBy</p>
                 </div>
             }
             <div class="form-group">

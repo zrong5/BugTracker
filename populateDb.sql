@@ -15,30 +15,31 @@ values
 (CONCAT(SYSDATETIME(), '<br />Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.<br />')),
 (CONCAT(SYSDATETIME(), '<br />Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br />'));
 insert into
-Urgency(Level, Description)
+Urgency(Id, Level, Description)
 values
-('Low','Under low priority, does not need immediate attention'),
-('Medium','Should fix before next update'),
-('High','Fix immediately and push update'),
-('Critical','Fix immediately or you are in trouble'),
-('Catastrophic','Fix or no sleep for you');
+(NEWID(),'Low','Under low priority, does not need immediate attention'),
+(NEWID(),'Medium','Should fix before next update'),
+(NEWID(),'High','Fix immediately and push update'),
+(NEWID(),'Critical','Fix immediately or you are in trouble'),
+(NEWID(),'Catastrophic','Fix or no sleep for you');
 
 insert into
-Status(Name, Description)
+Status(Id, Name, Description)
 values
-('Open','The bug is open for the grabs'),
-('Assigned','The bug is recently assigned to someone'),
-('In-progress','The bug is assigned and is being worked on'),
-('Closed','The bug is resolved or no longer being worked on'),
-('Reopened','The bug is reopened to be worked on');
+(NEWID(),'Open','The bug is open for the grabs'),
+(NEWID(),'Assigned','The bug is recently assigned to someone'),
+(NEWID(),'In-progress','The bug is assigned and is being worked on'),
+(NEWID(),'Closed','The bug is resolved or no longer being worked on'),
+(NEWID(),'Reopened','The bug is reopened to be worked on');
+
 
 insert into
-Project(Name, Description, OwnerId)
+Project(Id, Name, Description, OwnerId)
 values
-('Log-In Update', 'Modernize the entire log-in page with material design elements and bootstrap', 9),
-('Star-link', 'Design and implement a modern backend for log-in page in accordance to microservices architecture',10),
-('Checkout-Api','Design and implement a light weight API for checkout and transaction process',11),
-('Star-link Update','Design and implement a database system using MongoDB',12);
+(NEWID(),'Log-In Update', 'Modernize the entire log-in page with material design elements and bootstrap', '8941617f-d056-438e-841f-384cc89df2a8'),
+(NEWID(),'Star-link', 'Design and implement a modern backend for log-in page in accordance to microservices architecture','391d0752-355d-4a0c-b224-48f22efe58e2'),
+(NEWID(),'Checkout-Api','Design and implement a light weight API for checkout and transaction process','3494bb7b-051b-43e6-9d30-953d9395bb46'),
+(NEWID(),'Star-link Update','Design and implement a database system using MongoDB','f775aa1f-79b9-40b6-98dd-a5df5ce60f93');
 
 
 --insert into

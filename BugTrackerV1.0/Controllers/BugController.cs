@@ -48,7 +48,7 @@ namespace BugTrackerV1._0.Controllers
                 CreatedOn = bug.CreatedOn,
                 CreatedBy = bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
-                ClosedBy = bug.ClosedBy.UserName,
+                ClosedBy = bug.ClosedBy == null ? "" : bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus(),
                 UpdateDetail = new BugUpdateModel()
             };
@@ -60,7 +60,11 @@ namespace BugTrackerV1._0.Controllers
         {
             if (ModelState.IsValid)
             {
-                string trimmedMsg = model.UpdateDetail.UpdateToLog.Trim();
+                string trimmedMsg = "";
+                if (model.UpdateDetail.UpdateToLog != null)
+                {
+                    trimmedMsg = model.UpdateDetail.UpdateToLog.Trim();
+                }
                 _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus);
             }
             return LocalRedirect("/Bug/Detail/" + Id);
