@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TrackerData.Models;
 
 namespace TrackerData
 {
+    [Table("Bug")]
     public class Bug
     {
         [Required]
@@ -17,6 +19,9 @@ namespace TrackerData
         public DateTime CreatedOn { get; set; }
         [Column(TypeName = "DateTime")]
         public DateTime? ClosedOn { get; set; }
+        [Required]
+        public ApplicationUser CreatedBy { get; set; }
+        public ApplicationUser ClosedBy { get; set; }
         [Required]
         public Project ProjectAffected { get; set; }
         public Team Owner { get; set; }

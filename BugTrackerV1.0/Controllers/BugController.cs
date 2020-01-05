@@ -35,7 +35,6 @@ namespace BugTrackerV1._0.Controllers
         {
             var bug = _bugs.GetById(id);
             var detail = bug.LogDetail == null ? "" : bug.LogDetail.Detail;
-            var updateDetail = new BugUpdateModel();
             var model = new BugDetailModel()
             {
                 Id = id,
@@ -47,9 +46,11 @@ namespace BugTrackerV1._0.Controllers
                 Description = bug.Description,
                 Urgency = bug.Urgency.Level,
                 CreatedOn = bug.CreatedOn,
+                CreatedBy = bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
+                ClosedBy = bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus(),
-                UpdateDetail = updateDetail
+                UpdateDetail = new BugUpdateModel()
             };
             return View(model);
         }

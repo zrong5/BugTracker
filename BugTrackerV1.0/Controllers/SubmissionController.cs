@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BugTrackerV1._0.Models.SubmissionModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TrackerData;
+using TrackerData.Models;
 
 namespace BugTrackerV1._0.Controllers
 {
     public class SubmissionController : Controller
     {
-        private IBug _bug;
-        public SubmissionController(IBug bug)
+        private readonly IBug _bug;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public SubmissionController(IBug bug, UserManager<ApplicationUser> userManager)
         {
             _bug = bug;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -28,11 +33,12 @@ namespace BugTrackerV1._0.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Submit(SubmissionIndexModel model)
+        public async Task<IActionResult> Submit(SubmissionIndexModel model)
         {
             int redirectId = 0;
             if (ModelState.IsValid)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
                 var now = DateTime.Now;
                 var newBug = new Bug()
                 {
@@ -43,7 +49,8 @@ namespace BugTrackerV1._0.Controllers
                     Description = model.Description,
                     LogDetail = _bug.CreateEmptyLog(),
                     ProjectAffected = _bug.GetProjectByName(model.ProjectAffected),
-                    Status = _bug.GetStatusByName("Open")
+                    Status = _bug.GetStatusByName("Open"),
+                    CreatedBy = currentUser
                 };
                 redirectId = _bug.Add(newBug);
             }

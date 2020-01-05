@@ -29,7 +29,9 @@ namespace TrackerService
                 .Include(bug => bug.ProjectAffected)
                 .Include(bug => bug.Owner)
                 .Include(bug => bug.LogDetail)
-                .Include(bug => bug.Urgency);
+                .Include(bug => bug.Urgency)
+                .Include(bug => bug.CreatedBy)
+                .Include(bug => bug.ClosedBy);
         }
 
         public IEnumerable<Project> GetAllProjects()

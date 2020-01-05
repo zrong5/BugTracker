@@ -15,9 +15,28 @@
                 <p class="lead">@Model.Title</p>
             </div>
             <div class="form-group">
+                <label for="BugTitle">Bug Title</label>
+                <p class="lead">@Model.CreatedOn</p>
+            </div>
+            <div class="form-group">
                 <label for="BugTitle">Assigned To</label>
                 <p class="lead">@Model.Team</p>
             </div>
+            <div class="form-group">
+                <label for="BugTitle">Bug Title</label>
+                <p class="lead">@Model.CreatedBy</p>
+            </div>
+            @if (string.IsNullOrWhiteSpace(Model.ClosedBy) && Model.ClosedOn != null)
+            {
+                <div class="form-group">
+                    <label for="BugTitle">Closed By</label>
+                    <p class="lead">@Model.ClosedBy</p>
+                </div>
+                <div class="form-group">
+                    <label for="BugTitle">Closed On</label>
+                    <p class="lead">@Model.ClosedOn</p>
+                </div>
+            }
             <div class="form-group">
                 <label for="Description">Description</label>
                 <p class="lead">@Model.Description</p>
@@ -33,7 +52,7 @@
             <div class="form-group">
                 <div class="form-group">
                     <label for="ProgressLog">Progress Log</label>
-                    <p style="white-space:pre-line">@Html.Raw(Model.ProgressLog.Replace("\n","<br />"))</p>
+                    <p style="white-space:pre-line">@Html.Raw(Model.ProgressLog.Replace("\n", "<br />"))</p>
                     <textarea asp-for="UpdateDetail.UpdateToLog" class="form-control" rows="3"></textarea>
                 </div>
             </div>

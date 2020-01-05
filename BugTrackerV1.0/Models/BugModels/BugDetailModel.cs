@@ -15,6 +15,8 @@ namespace BugTrackerV1._0.Models.BugModels
         public string Urgency { get; set; }
         public string ProgressLog { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public string ClosedBy { get; set; }
         public DateTime? ClosedOn { get; set; }
         public IEnumerable<Status> StatusOptions { get; set; }
         public BugUpdateModel UpdateDetail { get; set; }
