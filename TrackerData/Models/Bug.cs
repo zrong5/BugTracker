@@ -9,7 +9,7 @@ namespace TrackerData
     [Table("Bug")]
     public class Bug
     {
-        [Required]
+        [Required, Key]
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
@@ -22,12 +22,9 @@ namespace TrackerData
         [Required]
         public ApplicationUser CreatedBy { get; set; }
         public ApplicationUser ClosedBy { get; set; }
-        [Required]
         public Project ProjectAffected { get; set; }
         public Team Owner { get; set; }
-        [Required]
         public Urgency Urgency { get; set; }
-        [Required]
         public Status Status { get; set; }
         public ProcessLog LogDetail { get; set; }
     }

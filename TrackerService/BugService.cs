@@ -76,7 +76,7 @@ namespace TrackerService
                 .FirstOrDefault(proj => proj.Name == projectName);
         }
 
-        public Status GetStatusById(int Id)
+        public Status GetStatusById(Guid Id)
         {
             return GetAllStatus()
                 .FirstOrDefault(s => s.Id == Id);

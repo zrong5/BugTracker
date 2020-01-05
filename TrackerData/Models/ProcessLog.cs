@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrackerData.Models
 {
+    [Table("ProcessLog")]
     public class ProcessLog
     {
-        [Required]
-        public int Id { get; set; }
+        [Required, Key]
+        public Guid Id { get; set; }
         public string Detail { get; set; }
     }
 }

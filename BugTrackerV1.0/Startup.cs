@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using TrackerData;
 using TrackerData.Models;
 using TrackerService;
@@ -29,19 +30,17 @@ namespace BugTrackerV1._0
             services.AddDbContext<TrackerContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
 
-            services.AddDbContext<IdentityContext>(options
-                => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequiredLength = 4;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
             })
-            .AddRoles<IdentityRole>()
-            .AddRoleManager<RoleManager<IdentityRole>>()
-            .AddEntityFrameworkStores<IdentityContext>()
+            .AddRoles<IdentityRole<Guid>>()
+            .AddRoleManager<RoleManager<IdentityRole<Guid>>>()
+            .AddEntityFrameworkStores<TrackerContext>()
             .AddDefaultTokenProviders();
 
             services.AddAuthorization(options =>

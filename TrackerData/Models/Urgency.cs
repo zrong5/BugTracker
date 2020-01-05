@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrackerData.Models
 {
+    [Table("Urgency")]
     public class Urgency
     {
-        [Required]
-        public int Id { get; set; }
+        [Required, Key]
+        public Guid Id { get; set; }
         [Required]
         public string Level { get; set; }
         public string Description { get; set; }

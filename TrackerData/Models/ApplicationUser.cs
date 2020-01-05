@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrackerData.Models
 {
-    public class ApplicationUser : IdentityUser
+    [Table("ApplicationUser")]
+    public class ApplicationUser : IdentityUser<Guid>
     {
-        public Team BelongsToTeam { get; set; }
+        public Guid TeamId { get; set; }
+        [ForeignKey("TeamId")]
+        public Team Team { get; set; }
     }
 }
