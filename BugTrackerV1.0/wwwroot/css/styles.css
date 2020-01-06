@@ -1,0 +1,20 @@
+﻿.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.primary-background {
+    background: #303030;
+}
+
+.secondary-background {
+    background: #404040;
+    padding: 30px;
+}
+
+#login-wrapper{
+    padding: 30px;
+}
