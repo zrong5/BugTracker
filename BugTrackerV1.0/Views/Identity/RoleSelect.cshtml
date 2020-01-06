@@ -21,7 +21,7 @@
                         </div>
                         <div class="col-sm">
                             <div class="card text-light bg-info mb-3">
-                                <input type="image" class="card-img-top" src="~/images/bugs.jpg" alt="Card image cap" 
+                                <input type="image" class="card-img-top" src="~/images/bugs.jpg" alt="Card image cap"
                                        asp-controller="Identity" asp-action="RoleSelect" asp-route-roleName="Manager">
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Manager</h5>
@@ -48,6 +48,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <label class="control-label text-light">Has an account?</label>
+                        <a asp-controller="Identity" asp-action="Login" class="text-light"><u>Login</u></a>
                     </div>
                 </div>
             </div>

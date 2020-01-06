@@ -189,7 +189,7 @@ namespace BugTrackerV1._0.Controllers
                 var user = await _userManager.FindByNameAsync(roleName);
                 if(user != null)
                 {
-                    await _signInManager.SignInAsync(user, true, true);
+                    await _signInManager.SignInAsync(user, false);
                 }
             }
             return RedirectToAction("Index", "Home");
