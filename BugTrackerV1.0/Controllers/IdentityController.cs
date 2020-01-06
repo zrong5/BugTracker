@@ -174,5 +174,25 @@ namespace BugTrackerV1._0.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult RoleSelect()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoleSelect(string roleName)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(roleName);
+                if(user != null)
+                {
+                    await _signInManager.SignInAsync(user, true, true);
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

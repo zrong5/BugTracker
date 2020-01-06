@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Role Select";
+}
+
+<body class="primary-background">
+    <div class="container">
+        <form asp-controller="Identity" asp-action="RoleSelect" method="post">
+            <div class="row justify-content-center">
+                <div class="col-3 vertical-center secondary-background rounded">
+                    <h3 class="text-light text-center" style="padding:5px">Bug Tracker System</h3>
+                    <h4 class="text-light text-center" style="padding:5px">Demo User Login</h4>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="card text-light bg-info mb-3">
+                                <input type="image" class="card-img-top" src="~/images/submission.jpg" alt="Card image cap"
+                                       asp-controller="Identity" asp-action="RoleSelect" asp-route-roleName="Admin">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Admin</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="card text-light bg-info mb-3">
+                                <input type="image" class="card-img-top" src="~/images/bugs.jpg" alt="Card image cap" 
+                                       asp-controller="Identity" asp-action="RoleSelect" asp-route-roleName="Manager">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Manager</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="card text-light bg-info mb-3">
+                                <input type="image" class="card-img-top" src="~/images/submission.jpg" alt="Card image cap"
+                                       asp-controller="Identity" asp-action="RoleSelect" asp-route-roleName="Developer">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Developer</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="card text-light bg-info mb-3">
+                                <input type="image" class="card-img-top" src="~/images/bugs.jpg" alt="Card image cap"
+                                       asp-controller="Identity" asp-action="RoleSelect" asp-route-roleName="Submitter">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Submitter</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

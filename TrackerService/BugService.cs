@@ -9,7 +9,7 @@ namespace TrackerService
 {
     public class BugService : IBug
     {
-        private TrackerContext _context;
+        private readonly TrackerContext _context;
         public BugService(TrackerContext context)
         {
             _context = context;
