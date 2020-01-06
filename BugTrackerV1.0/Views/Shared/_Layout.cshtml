@@ -12,8 +12,8 @@
 </head>
 @if (User.Identity.IsAuthenticated)
 {
-    <body>
-        <header>
+<body>
+    @*<header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bug Tracker System</a>
@@ -33,7 +33,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Bug" asp-action="Index">Bugs</a>
                             </li>
-                            @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Role")).Succeeded)
+                            @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Roles")).Succeeded)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-light" asp-controller="Identity" asp-action="ManageRoles">Manage Roles</a>
@@ -43,24 +43,56 @@
                     </div>
                 </div>
             </nav>
-        </header>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+        </header>*@
+    <div class="d-flex" id="wrapper">
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading text-light">Bug Tracker System</div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Home" asp-action="Index">Dashboard</a>
+                <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Submission" asp-action="Index">Create Ticket</a>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Roles")).Succeeded)
+                {
+                    <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Identity" asp-action="ManageRoles">Manage Roles</a>
+                }
+                <a class="list-group-item list-group-item-action bg-dark text-light">Manage Projects</a>
+                <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Bug" asp-action="Index">My Tickets</a>
+                <a class="list-group-item list-group-item-action bg-dark text-light">User Profile</a>
+            </div>
         </div>
-
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <partial name="_LoginPartial" />
+                </div>
+            </nav>
+            <div class="container-fluid">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
 
         <footer class="border-top footer text-muted">
             <div class="container">
-                &copy; 2019 - BugTrackerV1._0 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2019 - BugTrackerSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         @RenderSection("Scripts", required: false)
-    </body>
+        <script>
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+        </script>
+</body>
 }
 else
 {

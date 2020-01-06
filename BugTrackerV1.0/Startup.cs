@@ -45,7 +45,13 @@ namespace BugTrackerV1._0
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Manage Role", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("View Dashboard", policy => policy.RequireRole("Developer", "Admin", "Manager"));
+                options.AddPolicy("Manage Roles", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("Manage Users", policy => policy.RequireRole("Manager", "Admin"));
+                options.AddPolicy("Manage Projects", policy => policy.RequireRole("Manager", "Admin"));
+                options.AddPolicy("View Bugs", policy => policy.RequireRole("Developer", "Manager", "Admin"));
+                options.AddPolicy("Submit Bugs", policy => policy.RequireRole("Developer", "Admin", "Manager", "Submitter"));
+                options.AddPolicy("View Profile", policy => policy.RequireRole("Developer", "Admin", "Manager", "Submitter"));
                 // options.AddPolicy("Add Role", policy => policy.RequireClaim("Can add roles", "add.role"));
             });
 
