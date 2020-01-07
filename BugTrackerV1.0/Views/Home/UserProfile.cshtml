@@ -1,6 +1,16 @@
-﻿
+﻿@model BugTrackerV1._0.Models.IdentityModels.UserProfileModel
 @{
     ViewData["Title"] = "UserProfile";
 }
 
-
+    <div class="primary-background container" style="padding:10px">
+        <p class="text-light">@Model.UserName</p>
+    </div>
+    <div class="container rounded profile-block bg-light" style="padding:10px">
+        <label>Email: </label>
+        <p>@Model.EmailAddress</p>
+        <label>Role: </label>
+        <p>@Model.Role</p>
+        <label>Team: </label>
+        <p>@Model.Team</p>
+    </div>

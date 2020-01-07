@@ -70,7 +70,7 @@
                 }
                 @if ((await AuthorizationService.AuthorizeAsync(User, "View Profile")).Succeeded)
                 {
-                    <a class="list-group-item list-group-item-action bg-dark text-light">User Profile</a>
+                    <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Home" asp-action="UserProfile">User Profile</a>
                 }
                 </div>
         </div>

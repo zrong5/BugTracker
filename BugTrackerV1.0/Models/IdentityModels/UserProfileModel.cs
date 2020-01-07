@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BugTrackerV1._0.Models.BugModels
+namespace BugTrackerV1._0.Models.IdentityModels
 {
     public class UserProfileModel
     {
@@ -11,7 +11,5 @@ namespace BugTrackerV1._0.Models.BugModels
         public string Role { get; set; }
         public string EmailAddress { get; set; }
         public string Team { get; set; }
-        public int NumberOfProjectsAssigned { get; set; }
-        public int NumberOfBugsResolved { get; set; }
     }
 }
