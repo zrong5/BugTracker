@@ -3,15 +3,21 @@ using BugTracker.Models.BugModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BugTracker.Data;
+using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
     public class BugController : Controller
     {
-        private IBug _bugs;
-        public BugController(IBug bugs)
+        private readonly IBug _bugs;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public BugController(IBug bugs,
+            UserManager<ApplicationUser> userManager)
         {
             _bugs = bugs;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -76,20 +82,27 @@ namespace BugTracker.Controllers
         {
             return View();
         }
+
         [HttpGet]
-        public JsonResult PopulateStatusGraph()
+        public async Task<JsonResult> PopulateStatusGraph()
         {
-            return Json(1);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var statusList = _bugs.GetBugByStatusList(user);
+            return Json(statusList);
         }
         [HttpGet]
-        public JsonResult PopulateMonthlyGraph()
+        public async Task<JsonResult> PopulateMonthlyGraph()
         {
-            return Json(1);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var monthList = _bugs.GetBugByMonthList(user);
+            return Json(monthList);
         }
         [HttpGet]
-        public JsonResult PopulateUrgencyGraph()
+        public async Task<JsonResult> PopulateUrgencyGraph()
         {
-            return Json(1);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var urgencyList = _bugs.GetBugByUrgencyList(user);
+            return Json(urgencyList);
         }
     }
 }

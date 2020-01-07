@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BugTrackerV1._0.Models.BugModels.DashboardDataModels
+namespace BugTracker.Data
 {
     [NotMapped]
     public class UrgencyGraphModel

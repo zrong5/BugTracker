@@ -21,7 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BugTracker.Data\BugTracker.Data.csproj" />
+    <ProjectReference Include="..\TrackerData\BugTracker.Data.csproj" />
+    <ProjectReference Include="..\TrackerService\BugTracker.Service.csproj" />
     
   </ItemGroup>
 

@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using BugTracker.Data;
 using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Collections;
+using System.Globalization;
 
 namespace BugTracker.Service
 {
     public class BugService : IBug
     {
         private readonly TrackerContext _context;
+        
         public BugService(TrackerContext context)
         {
             _context = context;
@@ -135,6 +139,86 @@ namespace BugTracker.Service
                 bug.Status = newStatus;
             }
             _context.SaveChanges();
+        }
+
+        public ICollection<MonthlyGraphModel> GetBugByMonthList(ApplicationUser user)
+        {
+            var allBugs = GetAll().Where(bug => bug.AssignedTo == user);
+            var modelList = new List<MonthlyGraphModel>();
+            for(int i = 0; i < 12; ++i)
+            {
+                modelList.Add(new MonthlyGraphModel
+                {
+                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i + 1),
+                    NumberOfBugs = 0
+                });
+            }
+            
+            foreach(var bug in allBugs)
+            {
+                if((bug.CreatedOn.Year == DateTime.Now.Year))
+                {
+                    var month = bug.CreatedOn.Month;
+                    modelList[month - 1].NumberOfBugs++;
+                }
+            }
+            return modelList;
+        }
+
+        public ICollection<StatusGraphModel> GetBugByStatusList(ApplicationUser user)
+        {
+            var allBugs = GetAll().Where(bug => bug.AssignedTo == user);
+            var modelList = new List<StatusGraphModel>();
+            var allStatus = _context.Status;
+
+            // populate dicitonary to create mapping between status and number of bugs
+            var statusMap = new Dictionary<string, int>();
+            foreach (var status in allStatus)
+            {
+                statusMap[status.Name] = 0;
+            }
+            foreach (var bug in allBugs)
+            {
+                statusMap[bug.Status.Name]++;
+            }
+
+            // populate into list as single object
+            foreach(var pair in statusMap)
+            {
+                modelList.Add(new StatusGraphModel
+                {
+                    StatusName = pair.Key,
+                    NumberOfBugs = pair.Value
+                });
+            }
+            return modelList;
+        }
+
+        public ICollection<UrgencyGraphModel> GetBugByUrgencyList(ApplicationUser user)
+        {
+            var allBugs = GetAll().Where(bug => bug.AssignedTo == user);
+            var modelList = new List<UrgencyGraphModel>();
+            var allUrgency = _context.Urgency;
+
+            var urgencyMap = new Dictionary<string, int>();
+            foreach(var urgency in allUrgency)
+            {
+                urgencyMap[urgency.Level] = 0;
+            }
+            foreach(var bug in allBugs)
+            {
+                urgencyMap[bug.Urgency.Level]++;
+            }
+            foreach(var pair in urgencyMap)
+            {
+                modelList.Add(new UrgencyGraphModel
+                {
+                    UrgencyName = pair.Key,
+                    NumberOfBugs = pair.Value
+                });
+            }
+
+            return modelList;
         }
     }
 }
