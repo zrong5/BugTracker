@@ -2,9 +2,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TrackerData.Models;
+using BugTracker.Data.Models;
 
-namespace TrackerData
+namespace BugTracker.Data
 {
     [Table("Bug")]
     public class Bug
@@ -22,6 +22,7 @@ namespace TrackerData
         [Required]
         public ApplicationUser CreatedBy { get; set; }
         public ApplicationUser ClosedBy { get; set; }
+        public ApplicationUser AssignedTo { get; set; }
         public Project ProjectAffected { get; set; }
         public Team Owner { get; set; }
         public Urgency Urgency { get; set; }

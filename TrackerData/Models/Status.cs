@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TrackerData
+namespace BugTracker.Data
 {
     [Table("Status")]
     public class Status

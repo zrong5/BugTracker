@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TrackerData.Models
+namespace BugTracker.Data.Models
 {
     [Table("Urgency")]
     public class Urgency

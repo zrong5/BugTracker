@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TrackerData.Models;
+using BugTracker.Data.Models;
 
-namespace TrackerData
+namespace BugTracker.Data
 {
     public interface IBug
     {

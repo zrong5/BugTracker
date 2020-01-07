@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TrackerData;
-using TrackerData.Models;
+using BugTracker.Data;
+using BugTracker.Data.Models;
 
-namespace TrackerService
+namespace BugTracker.Service
 {
     public class UserService : IUser
     {
@@ -18,7 +18,7 @@ namespace TrackerService
             _userManager = userManager;
             _context = context;
         }
-        public async Task<string> GetAllRoles(ApplicationUser user, char deliminator)
+        public async Task<string> GetAllRolesAsync(ApplicationUser user, char deliminator)
         {
             // concatenate all role names assign to user 
             var currentRoles = await _userManager.GetRolesAsync(user);
@@ -38,6 +38,17 @@ namespace TrackerService
             var teamId = user.TeamId;
             var teamName = _context.Team.FirstOrDefault(team => team.Id == teamId).Name;
             return teamName;
+        }
+
+        public async Task<bool> IsUserUniqueAsync(ApplicationUser user)
+        {
+            var emailUnique = await _userManager.FindByNameAsync(user.UserName);
+            var usernameUnique = await _userManager.FindByEmailAsync(user.Email);
+            if(emailUnique == null && usernameUnique == null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

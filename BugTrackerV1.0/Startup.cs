@@ -6,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using TrackerData;
-using TrackerData.Models;
-using TrackerService;
+using BugTracker.Data;
+using BugTracker.Data.Models;
+using BugTracker.Service;
 
-namespace BugTrackerV1._0
+namespace BugTracker
 {
     public class Startup
     {

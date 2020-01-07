@@ -1,9 +1,10 @@
 ﻿using System.Linq;
-using BugTrackerV1._0.Models.BugModels;
+using BugTracker.Models.BugModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrackerData;
+using BugTracker.Data;
 
-namespace BugTrackerV1._0.Controllers
+namespace BugTracker.Controllers
 {
     public class BugController : Controller
     {
@@ -68,6 +69,27 @@ namespace BugTrackerV1._0.Controllers
                 _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus);
             }
             return LocalRedirect("/Bug/Detail/" + Id);
+        }
+
+        [Authorize(Policy = "View Dashboard")]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+        [HttpGet]
+        public JsonResult PopulateStatusGraph()
+        {
+            return Json(1);
+        }
+        [HttpGet]
+        public JsonResult PopulateMonthlyGraph()
+        {
+            return Json(1);
+        }
+        [HttpGet]
+        public JsonResult PopulateUrgencyGraph()
+        {
+            return Json(1);
         }
     }
 }

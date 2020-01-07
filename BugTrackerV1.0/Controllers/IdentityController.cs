@@ -1,31 +1,34 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BugTrackerV1._0.Models.IdentityModels;
+using BugTracker.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TrackerData;
-using TrackerData.Models;
+using BugTracker.Data;
+using BugTracker.Data.Models;
 
-namespace BugTrackerV1._0.Controllers
+namespace BugTracker.Controllers
 {
     public class IdentityController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly IUser _user;
         private readonly IBug _bug;
         public IdentityController(
             IBug bug,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            IUser user)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _bug = bug;
+            _user = user;
         }
         [AllowAnonymous]
         public IActionResult Login()
@@ -71,7 +74,6 @@ namespace BugTrackerV1._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterIndexModel model)
         {
-            //var role = "Admin";
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
@@ -81,26 +83,11 @@ namespace BugTrackerV1._0.Controllers
                     Team = _bug.GetTeamByName(model.Team)
                 };
 
-                var emailUnique = await _userManager.FindByNameAsync(user.UserName);
-                var usernameUnique = await _userManager.FindByEmailAsync(user.Email);
-
-                if(emailUnique == null && usernameUnique == null)
+                if(await _user.IsUserUniqueAsync(user))
                 {
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        //var currentUser = await _userManager.FindByEmailAsync(user.Email);
-
-                        //// create role if it doesn't exists
-                        //var roleResult = await _roleManager.FindByNameAsync(role);
-                        //if (roleResult == null)
-                        //{
-                        //    var adminRole = new IdentityRole(role);
-                        //    await _roleManager.CreateAsync(adminRole);
-                        //    // await _roleManager.AddClaimAsync(adminRole, new Claim("Can add roles", "add.role"));
-                        //}
-                        //await _userManager.AddToRoleAsync(currentUser, role);
-
                         var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                         if (signInResult.Succeeded)
                         {
@@ -195,6 +182,22 @@ namespace BugTrackerV1._0.Controllers
                 }
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> UserProfile()
+        {
+            var userName = User.Identity.Name;
+            var currentUser = await _userManager.FindByNameAsync(userName);
+
+            // generate new view model to send 
+            var model = new UserProfileModel()
+            {
+                EmailAddress = currentUser.Email,
+                Team = _user.GetTeamName(currentUser),
+                UserName = userName,
+                Role = await _user.GetAllRolesAsync(currentUser, ',')
+            };
+            return View(model);
         }
     }
 }

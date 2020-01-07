@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using TrackerData.Models;
+using BugTracker.Data.Models;
 
-namespace TrackerData
+namespace BugTracker.Data
 {
     public class TrackerContext: IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {

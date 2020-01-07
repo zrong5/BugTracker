@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TrackerData;
+using BugTracker.Data;
 
-namespace TrackerData.Migrations
+namespace BugTracker.Data.Migrations
 {
     [DbContext(typeof(TrackerContext))]
     partial class TrackerContextModelSnapshot : ModelSnapshot
@@ -148,12 +148,15 @@ namespace TrackerData.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TrackerData.Bug", b =>
+            modelBuilder.Entity("BugTracker.Data.Bug", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid?>("AssignedToId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ClosedById")
                         .HasColumnType("uniqueidentifier");
@@ -191,6 +194,8 @@ namespace TrackerData.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignedToId");
+
                     b.HasIndex("ClosedById");
 
                     b.HasIndex("CreatedById");
@@ -208,7 +213,7 @@ namespace TrackerData.Migrations
                     b.ToTable("Bug");
                 });
 
-            modelBuilder.Entity("TrackerData.Models.ApplicationUser", b =>
+            modelBuilder.Entity("BugTracker.Data.Models.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,7 +284,7 @@ namespace TrackerData.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TrackerData.Models.ProcessLog", b =>
+            modelBuilder.Entity("BugTracker.Data.Models.ProcessLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -293,7 +298,7 @@ namespace TrackerData.Migrations
                     b.ToTable("ProcessLog");
                 });
 
-            modelBuilder.Entity("TrackerData.Models.Urgency", b =>
+            modelBuilder.Entity("BugTracker.Data.Models.Urgency", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,7 +316,7 @@ namespace TrackerData.Migrations
                     b.ToTable("Urgency");
                 });
 
-            modelBuilder.Entity("TrackerData.Project", b =>
+            modelBuilder.Entity("BugTracker.Data.Project", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -334,7 +339,7 @@ namespace TrackerData.Migrations
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("TrackerData.Status", b =>
+            modelBuilder.Entity("BugTracker.Data.Status", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -352,7 +357,7 @@ namespace TrackerData.Migrations
                     b.ToTable("Status");
                 });
 
-            modelBuilder.Entity("TrackerData.Team", b =>
+            modelBuilder.Entity("BugTracker.Data.Team", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -378,7 +383,7 @@ namespace TrackerData.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("TrackerData.Models.ApplicationUser", null)
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,7 +392,7 @@ namespace TrackerData.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("TrackerData.Models.ApplicationUser", null)
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -402,7 +407,7 @@ namespace TrackerData.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TrackerData.Models.ApplicationUser", null)
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -411,58 +416,62 @@ namespace TrackerData.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("TrackerData.Models.ApplicationUser", null)
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TrackerData.Bug", b =>
+            modelBuilder.Entity("BugTracker.Data.Bug", b =>
                 {
-                    b.HasOne("TrackerData.Models.ApplicationUser", "ClosedBy")
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", "AssignedTo")
+                        .WithMany()
+                        .HasForeignKey("AssignedToId");
+
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", "ClosedBy")
                         .WithMany()
                         .HasForeignKey("ClosedById");
 
-                    b.HasOne("TrackerData.Models.ApplicationUser", "CreatedBy")
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TrackerData.Models.ProcessLog", "LogDetail")
+                    b.HasOne("BugTracker.Data.Models.ProcessLog", "LogDetail")
                         .WithMany()
                         .HasForeignKey("LogDetailId");
 
-                    b.HasOne("TrackerData.Team", "Owner")
+                    b.HasOne("BugTracker.Data.Team", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
 
-                    b.HasOne("TrackerData.Project", "ProjectAffected")
+                    b.HasOne("BugTracker.Data.Project", "ProjectAffected")
                         .WithMany()
                         .HasForeignKey("ProjectAffectedId");
 
-                    b.HasOne("TrackerData.Status", "Status")
+                    b.HasOne("BugTracker.Data.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 
-                    b.HasOne("TrackerData.Models.Urgency", "Urgency")
+                    b.HasOne("BugTracker.Data.Models.Urgency", "Urgency")
                         .WithMany()
                         .HasForeignKey("UrgencyId");
                 });
 
-            modelBuilder.Entity("TrackerData.Models.ApplicationUser", b =>
+            modelBuilder.Entity("BugTracker.Data.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("TrackerData.Team", "Team")
+                    b.HasOne("BugTracker.Data.Team", "Team")
                         .WithMany("TeamMembers")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TrackerData.Project", b =>
+            modelBuilder.Entity("BugTracker.Data.Project", b =>
                 {
-                    b.HasOne("TrackerData.Team", "Owner")
+                    b.HasOne("BugTracker.Data.Team", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)

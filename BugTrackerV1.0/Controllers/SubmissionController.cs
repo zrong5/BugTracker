@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BugTrackerV1._0.Models.SubmissionModels;
+using BugTracker.Models.SubmissionModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TrackerData;
-using TrackerData.Models;
+using BugTracker.Data;
+using BugTracker.Data.Models;
 
-namespace BugTrackerV1._0.Controllers
+namespace BugTracker.Controllers
 {
     public class SubmissionController : Controller
     {

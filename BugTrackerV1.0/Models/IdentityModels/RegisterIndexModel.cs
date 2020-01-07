@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using TrackerData;
+using BugTracker.Data;
 
-namespace BugTrackerV1._0.Models.IdentityModels
+namespace BugTracker.Models.IdentityModels
 {
     public class RegisterIndexModel
     {

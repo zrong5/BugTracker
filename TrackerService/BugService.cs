@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrackerData;
-using TrackerData.Models;
+using BugTracker.Data;
+using BugTracker.Data.Models;
 
-namespace TrackerService
+namespace BugTracker.Service
 {
     public class BugService : IBug
     {

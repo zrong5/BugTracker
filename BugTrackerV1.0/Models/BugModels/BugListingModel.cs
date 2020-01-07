@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BugTrackerV1._0.Models.BugModels
+namespace BugTracker.Models.BugModels
 {
     public class BugListingModel
     {

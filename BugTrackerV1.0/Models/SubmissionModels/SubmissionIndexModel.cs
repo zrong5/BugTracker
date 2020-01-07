@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using TrackerData;
-using TrackerData.Models;
+using BugTracker.Data;
+using BugTracker.Data.Models;
 
-namespace BugTrackerV1._0.Models.SubmissionModels
+namespace BugTracker.Models.SubmissionModels
 {
     public class SubmissionIndexModel
     {

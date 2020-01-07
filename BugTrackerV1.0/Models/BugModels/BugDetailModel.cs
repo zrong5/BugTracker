@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using TrackerData;
+using BugTracker.Data;
 
-namespace BugTrackerV1._0.Models.BugModels
+namespace BugTracker.Models.BugModels
 {
     public class BugDetailModel
     {

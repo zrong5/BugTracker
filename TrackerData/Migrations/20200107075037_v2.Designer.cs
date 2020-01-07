@@ -10,8 +10,8 @@ using BugTracker.Data;
 namespace BugTracker.Data.Migrations
 {
     [DbContext(typeof(TrackerContext))]
-    [Migration("20200105210225_v1")]
-    partial class v1
+    [Migration("20200107075037_v2")]
+    partial class v2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -157,6 +157,9 @@ namespace BugTracker.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AssignedToId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("ClosedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -192,6 +195,8 @@ namespace BugTracker.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedToId");
 
                     b.HasIndex("ClosedById");
 
@@ -422,6 +427,10 @@ namespace BugTracker.Data.Migrations
 
             modelBuilder.Entity("BugTracker.Data.Bug", b =>
                 {
+                    b.HasOne("BugTracker.Data.Models.ApplicationUser", "AssignedTo")
+                        .WithMany()
+                        .HasForeignKey("AssignedToId");
+
                     b.HasOne("BugTracker.Data.Models.ApplicationUser", "ClosedBy")
                         .WithMany()
                         .HasForeignKey("ClosedById");

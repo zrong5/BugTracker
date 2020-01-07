@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace TrackerData.Migrations
+namespace BugTracker.Data.Migrations
 {
     public partial class v1 : Migration
     {

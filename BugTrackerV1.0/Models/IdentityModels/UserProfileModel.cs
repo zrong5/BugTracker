@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BugTrackerV1._0.Models.IdentityModels
+namespace BugTracker.Models.IdentityModels
 {
     public class UserProfileModel
     {

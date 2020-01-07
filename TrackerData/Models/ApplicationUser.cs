@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TrackerData.Models
+namespace BugTracker.Data.Models
 {
     [Table("ApplicationUser")]
     public class ApplicationUser : IdentityUser<Guid>
