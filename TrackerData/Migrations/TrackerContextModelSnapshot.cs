@@ -155,9 +155,6 @@ namespace TrackerData.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("AssignedToId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("ClosedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -193,8 +190,6 @@ namespace TrackerData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssignedToId");
 
                     b.HasIndex("ClosedById");
 
@@ -425,10 +420,6 @@ namespace TrackerData.Migrations
 
             modelBuilder.Entity("TrackerData.Bug", b =>
                 {
-                    b.HasOne("TrackerData.Models.ApplicationUser", "AssignedTo")
-                        .WithMany()
-                        .HasForeignKey("AssignedToId");
-
                     b.HasOne("TrackerData.Models.ApplicationUser", "ClosedBy")
                         .WithMany()
                         .HasForeignKey("ClosedById");
