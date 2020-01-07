@@ -22,6 +22,7 @@ namespace TrackerData
         [Required]
         public ApplicationUser CreatedBy { get; set; }
         public ApplicationUser ClosedBy { get; set; }
+        public ApplicationUser AssignedTo { get; set; }
         public Project ProjectAffected { get; set; }
         public Team Owner { get; set; }
         public Urgency Urgency { get; set; }

@@ -69,5 +69,7 @@ namespace BugTrackerV1._0.Controllers
             }
             return LocalRedirect("/Bug/Detail/" + Id);
         }
+
+        
     }
 }
