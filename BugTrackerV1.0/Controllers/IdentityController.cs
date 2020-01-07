@@ -27,6 +27,7 @@ namespace BugTrackerV1._0.Controllers
             _signInManager = signInManager;
             _bug = bug;
         }
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -51,7 +52,7 @@ namespace BugTrackerV1._0.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
+        [AllowAnonymous]
         public IActionResult Register()
         {
             var optionsModel = new RegisterOptionsModel
@@ -110,7 +111,7 @@ namespace BugTrackerV1._0.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
+        
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -174,7 +175,7 @@ namespace BugTrackerV1._0.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
+        [AllowAnonymous]
         public IActionResult RoleSelect()
         {
             return View();
@@ -182,6 +183,7 @@ namespace BugTrackerV1._0.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> RoleSelect(string roleName)
         {
             if (ModelState.IsValid)

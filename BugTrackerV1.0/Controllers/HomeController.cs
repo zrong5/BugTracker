@@ -18,9 +18,16 @@ namespace BugTrackerV1._0.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return View();
+                return RedirectToAction("UserProfile", "Home");
             }
-            return RedirectToAction("Login", "Identity");
+            else
+            {
+                return RedirectToAction("Login", "Identity");
+            }
+        }
+        public IActionResult UserProfile()
+        {
+            return View();
         }
 
         public IActionResult Privacy()
