@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BugTracker.Models.IdentityModels
+namespace BugTracker.Models.ManagementModels
 {
     public class AssignRolesIndexModel
     {

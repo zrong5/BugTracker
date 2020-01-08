@@ -16,7 +16,7 @@
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Projects")).Succeeded)
     {
-        <a class="list-group-item list-group-item-action bg-dark text-light">Manage Projects</a>
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Identity" asp-action="ManageProjects">Manage Projects</a>
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "View Bugs")).Succeeded)
     {
@@ -24,6 +24,6 @@
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "View Profile")).Succeeded)
     {
-        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Identity" asp-action="UserProfile">User Profile</a>
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Account" asp-action="UserProfile">User Profile</a>
     }
 </div>

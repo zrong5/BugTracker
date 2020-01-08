@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BugTracker.Models.IdentityModels
+namespace BugTracker.Models.AccountModels
 {
     public class LoginModel
     {

@@ -17,11 +17,11 @@ namespace BugTracker.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("UserProfile", "Identity");
+                return RedirectToAction("UserProfile", "Account");
             }
             else
             {
-                return RedirectToAction("Login", "Identity");
+                return RedirectToAction("Login", "Account");
             }
         }
         

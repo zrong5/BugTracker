@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using BugTracker.Data;
 
-namespace BugTracker.Models.IdentityModels
+namespace BugTracker.Models.AccountModels
 {
     public class RegisterIndexModel
     {
