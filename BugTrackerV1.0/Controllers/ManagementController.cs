@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BugTracker.Data;
 using BugTracker.Data.Models;
 using BugTracker.Models.ManagementModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +15,15 @@ namespace BugTracker.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly IUser _user;
         public ManagementController(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            IUser user)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _user = user;
         }
         [Authorize(Roles = "Admin")]
         public IActionResult ManageRoles()
@@ -76,6 +81,42 @@ namespace BugTracker.Controllers
                 }
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Policy = "Manage Projects")]
+        public IActionResult ManageProjects()
+        {
+            var allProjects = _user.GetAllProjects();
+            var allUsers = _user.GetAll();
+            var listingModel = allUsers
+                .Where(user => (_userManager.IsInRoleAsync(user, "Admin")).Result 
+                    || (_userManager.IsInRoleAsync(user, "Manager")).Result)
+                .Select(result => new ProjectListingModel
+            {
+                Username = result.UserName,
+                EmailAddress = result.Email,
+                Project = result.Project.Name
+            });
+            var model = new AssignProjectsIndexModel
+            {
+                UserProjects = listingModel,
+                Projects = _user.GetAllProjects().Select(result=>result.Name),
+                Users = _user.GetAll().Select(result => result.UserName)
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Manage Projects")]
+        public IActionResult ManageProjects(AssignProjectsIndexModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
+                _user.AssignUserToProject(user, model.UpdateModel.ProjectName);
+            }
+            return RedirectToAction("ManageProjects", "Management");
         }
     }
 }

@@ -3,6 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BugTracker.Data;
 using BugTracker.Data.Models;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace BugTracker.Service
 {
@@ -15,6 +18,28 @@ namespace BugTracker.Service
             _userManager = userManager;
             _context = context;
         }
+
+        public void AssignUserToProject(ApplicationUser user, string projectName)
+        {
+            _context.Update(user);
+            var project = _context.Project
+                .FirstOrDefault(project => project.Name == projectName);
+            user.Project = project;
+            _context.SaveChanges();
+        }
+
+        public IEnumerable<ApplicationUser> GetAll()
+        {
+            return _context.Users
+                .Include(user => user.Project)
+                .Include(user => user.Team);
+        }
+
+        public IEnumerable<Project> GetAllProjects()
+        {
+            return _context.Project;
+        }
+
         public async Task<string> GetAllRolesAsync(ApplicationUser user, char deliminator)
         {
             // concatenate all role names assign to user 
