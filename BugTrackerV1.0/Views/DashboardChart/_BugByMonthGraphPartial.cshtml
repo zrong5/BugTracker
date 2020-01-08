@@ -15,13 +15,13 @@
                 toastr.error(err.message);
             },
             success: function (data) {
-                PopulateUrgencyChart(data);
+                PopulateMonthlyChart(data);
                 return false;
             }
         });
         return false;
     }
-    function PopulateUrgencyChart(data) {
+    function PopulateMonthlyChart(data) {
         var dataArray = [
             ['Month', 'Tickets']
         ];

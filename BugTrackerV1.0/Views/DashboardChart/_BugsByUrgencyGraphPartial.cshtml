@@ -15,18 +15,18 @@
                 toastr.error(err.message);
             },
             success: function (data) {
-                PopulateStatusChart(data);
+                PopulateUrgencyChart(data);
                 return false;
             }
         });
         return false;
     }
-    function PopulateStatusChart(data) {
+    function PopulateUrgencyChart(data) {
         var dataArray = [
             ['Urgency', 'Tickets']
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.statusName, item.numberOfBugs]);
+            dataArray.push([item.urgencyName, item.numberOfBugs]);
         });
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {

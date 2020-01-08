@@ -11,8 +11,7 @@
                 Hello @User.Identity.Name!
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Profile</a>
-                <a class="dropdown-item" href="#">Setting</a>
+                <a class="dropdown-item" asp-controller="Account" asp-action="UserProfile">Profile</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Log Out</a>
             </div>
