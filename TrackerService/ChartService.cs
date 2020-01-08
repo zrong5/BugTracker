@@ -30,11 +30,11 @@ namespace BugTracker.Service
             var allBugs = AllBugsByUser(user);
 
             var modelList = new List<MonthlyGraphModel>();
-            for (int i = 0; i < 12; ++i)
+            for (var i = 0; i < 12; ++i)
             {
                 modelList.Add(new MonthlyGraphModel
                 {
-                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i + 1),
+                    MonthName = DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(i+1),
                     NumberOfBugs = 0
                 });
             }

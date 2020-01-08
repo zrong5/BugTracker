@@ -1,13 +1,13 @@
 ﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<div id="by-urgency-chart-div"></div>
+<div id="by-status-chart-div"></div>
 
 <script type="text/javascript">
     google.charts.load('current', { packages: ['corechart', 'bar'] });
-    google.charts.setOnLoadCallback(LoadDataByUrgency);  
-    function LoadDataByUrgency() {
+    google.charts.setOnLoadCallback(LoadDataByStatus);
+    function LoadDataByStatus() {
         $.ajax({
-            url: 'DashboardChart/PopulateUrgencyGraph',
+            url: 'DashboardChart/PopulateStatusGraph',
             dataType: "Json",
             type: "GET",
             error: function (xhr, status, error) {
@@ -15,24 +15,24 @@
                 toastr.error(err.message);
             },
             success: function (data) {
-                PopulateUrgencyChart(data);
+                PopulateStatusChart(data);
                 return false;
             }
         });
         return false;
     }
-    function PopulateUrgencyChart(data) {
+    function PopulateStatusChart(data) {
         var dataArray = [
-            ['Urgency', 'Tickets']
+            ['Status', 'Tickets']
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.urgencyName, item.numberOfBugs]);
+            dataArray.push([item.statusName, item.numberOfBugs]);
         });
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
-            'title': 'Tickets By Urgency',
+            'title': 'Tickets By Status',
         };
-        var chart = new google.visualization.ColumnChart(document.getElementById('by-urgency-chart-div'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('by-status-chart-div'));
         chart.draw(data, options);
         return false;
     }

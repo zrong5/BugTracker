@@ -1,13 +1,13 @@
 ﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<div id="by-urgency-chart-div"></div>
+<div id="by-month-chart-div"></div>
 
 <script type="text/javascript">
     google.charts.load('current', { packages: ['corechart', 'bar'] });
-    google.charts.setOnLoadCallback(LoadDataByUrgency);  
-    function LoadDataByUrgency() {
+    google.charts.setOnLoadCallback(LoadDataByMonth);
+    function LoadDataByMonth() {
         $.ajax({
-            url: 'DashboardChart/PopulateUrgencyGraph',
+            url: 'DashboardChart/PopulateMonthlyGraph',
             dataType: "Json",
             type: "GET",
             error: function (xhr, status, error) {
@@ -23,16 +23,17 @@
     }
     function PopulateUrgencyChart(data) {
         var dataArray = [
-            ['Urgency', 'Tickets']
+            ['Month', 'Tickets']
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.urgencyName, item.numberOfBugs]);
+            dataArray.push([item.monthName, item.numberOfBugs]);
         });
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
-            'title': 'Tickets By Urgency',
+            'title': 'Tickets By Month',
+            'is3D':true
         };
-        var chart = new google.visualization.ColumnChart(document.getElementById('by-urgency-chart-div'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('by-month-chart-div'));
         chart.draw(data, options);
         return false;
     }

@@ -3,14 +3,30 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
-                <partial name="_BugsByUrgencyGraphPartial" />
-                <div class="card-body">
-                    <p>Tickets By Urgency</p>
-                </div>
+<div class="row" style="padding: 15px">
+    <div class="col">
+        <div class="card text-light bg-dark px-3 py-3">
+            <partial name="_BugsByUrgencyGraphPartial" />
+            <div class="card-body">
+                <p>Tickets By Urgency</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-light bg-dark px-3 py-3">
+            <partial name="_BugsByStatusGraphPartial" />
+            <div class="card-body">
+                <p>Tickets By Status</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card text-light bg-dark px-3 py-3">
+            <partial name="_BugByMonthGraphPartial" />
+            <div class="card-body">
+                <p>Tickets By Month</p>
             </div>
         </div>
     </div>
