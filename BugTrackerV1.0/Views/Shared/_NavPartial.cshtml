@@ -12,11 +12,11 @@
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Roles")).Succeeded)
     {
-        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Identity" asp-action="ManageRoles">Manage Roles</a>
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Management" asp-action="ManageRoles">Manage Roles</a>
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "Manage Projects")).Succeeded)
     {
-        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Identity" asp-action="ManageProjects">Manage Projects</a>
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Management" asp-action="ManageProjects">Manage Projects</a>
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "View Bugs")).Succeeded)
     {
