@@ -18,5 +18,6 @@ namespace BugTracker.Data
         public DbSet<Team> Team { get; set; }
         public DbSet<ProcessLog> ProcessLog { get; set; }
         public DbSet<Urgency> Urgency { get; set; }
+        public DbSet<UserProject> UserProject { get; set; }
     }
 }

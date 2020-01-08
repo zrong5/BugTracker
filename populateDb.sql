@@ -61,21 +61,18 @@ values
 ('HolyFuck', 'Db fucked. Please fix that shitty stuff.', 4, Getdate(), '3c0105ba-abb7-4461-9ac9-b548136b6032',4, 4,null,4,4);
 
 
-select * from dbo.AspNetUsers
-
-update Bug set LogDetailId = null;
-delete from ProcessLog;
-
-select * from Project;
-select * from ProcessLog;
-select * from Status;
-select * from Urgency;
-select * from Team;
-select * from Bug;
-
-delete from ProcessLog;
-delete from Project;
-DELETE from [Status];
-delete from Urgency;
-delete from Team;
-delete from Bug;
+insert into 
+dbo.UserProject(Id, UserId, ProjectId)
+values(NEWID(), 'a8c935ef-ae89-4ca4-89ec-08d792265289', '2096ef01-6f67-4aba-a260-776d2c597241');
+insert into 
+dbo.UserProject(Id, UserId, ProjectId)
+values(NEWID(), '7ce7fb34-be71-48e5-e225-08d792e778ed', 'c2e65957-4730-42ff-a015-df1b257b62d6');
+insert into 
+dbo.UserProject(Id, UserId, ProjectId)
+values(NEWID(), 'fb0d0a96-1c24-4141-d8f7-08d792fb15fa', '3b7674f1-2d22-4e9f-95b2-e174b095ccc3');
+insert into 
+dbo.UserProject(Id, UserId, ProjectId)
+values(NEWID(), 'c59f753e-2341-4324-d8f8-08d792fb15fa', '38b89650-0906-4895-96e9-f6fdbf97cfa2');
+insert into 
+dbo.UserProject(Id, UserId, ProjectId)
+values(NEWID(), 'a8cadbcf-2c86-4c1d-d8f9-08d792fb15fa', '38b89650-0906-4895-96e9-f6fdbf97cfa2');

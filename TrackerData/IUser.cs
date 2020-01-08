@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BugTracker.Data.Models;
 
@@ -11,7 +10,8 @@ namespace BugTracker.Data
         string GetTeamName(ApplicationUser user);
         Task<bool> IsUserUniqueAsync(ApplicationUser user);
         IEnumerable<ApplicationUser> GetAll();
-        IEnumerable<Project> GetAllProjects();
-        void AssignUserToProject(ApplicationUser user, string project);
+        void AssignUserToProject(ApplicationUser user, string projectName);
+        void RemoveUserFromProject(ApplicationUser user, string projectName);
+        IEnumerable<UserProject> GetAllUserProjects();
     }
 }

@@ -21,23 +21,29 @@ namespace BugTracker.Service
 
         public void AssignUserToProject(ApplicationUser user, string projectName)
         {
-            _context.Update(user);
             var project = _context.Project
                 .FirstOrDefault(project => project.Name == projectName);
-            user.Project = project;
-            _context.SaveChanges();
+            var userProject = new UserProject
+            {
+                User = user,
+                Project = project
+            };
+
+            var alreadyAssigned = _context.UserProject
+                .Where(userProj => userProj.User == user && userProj.Project == project)
+                .Any();
+
+            if (!alreadyAssigned)
+            {
+                _context.Add(userProject);
+                _context.SaveChanges();
+            }
         }
 
         public IEnumerable<ApplicationUser> GetAll()
         {
             return _context.Users
-                .Include(user => user.Project)
                 .Include(user => user.Team);
-        }
-
-        public IEnumerable<Project> GetAllProjects()
-        {
-            return _context.Project;
         }
 
         public async Task<string> GetAllRolesAsync(ApplicationUser user, char deliminator)
@@ -53,6 +59,11 @@ namespace BugTracker.Service
             concatRoles = concatRoles.Trim();
             concatRoles = concatRoles[0..^1];
             return concatRoles;
+        }
+
+        public IEnumerable<UserProject> GetAllUserProjects()
+        {
+            return _context.UserProject;
         }
 
         public string GetTeamName(ApplicationUser user)
@@ -71,6 +82,23 @@ namespace BugTracker.Service
                 return true;
             }
             return false;
+        }
+
+        public void RemoveUserFromProject(ApplicationUser user, string projectName)
+        {
+            var projectsOfUser = _context.UserProject
+                .Where(userProject => userProject.User == user);
+            var project = _context.Project
+                .FirstOrDefault(project => project.Name == projectName);
+
+            var toDelete = projectsOfUser
+                .FirstOrDefault(userProject => userProject.Project.Name == projectName);
+
+            if(toDelete != null)
+            {
+                _context.Remove(toDelete);
+                _context.SaveChanges();
+            }
         }
     }
 }

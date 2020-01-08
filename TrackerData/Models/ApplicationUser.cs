@@ -10,6 +10,5 @@ namespace BugTracker.Data.Models
         public Guid TeamId { get; set; }
         [ForeignKey("TeamId")]
         public Team Team { get; set; }
-        public Project Project { get; set; }
     }
 }

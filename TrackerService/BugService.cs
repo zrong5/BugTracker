@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BugTracker.Data;
 using BugTracker.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Collections;
-using System.Globalization;
 
 namespace BugTracker.Service
 {

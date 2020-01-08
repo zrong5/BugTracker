@@ -2,7 +2,7 @@
 
 namespace BugTracker.Models.ManagementModels
 {
-    public class AssignRolesIndexModel
+    public class RolesIndexModel
     {
         public string User { get; set; }
         public string Role { get; set; }

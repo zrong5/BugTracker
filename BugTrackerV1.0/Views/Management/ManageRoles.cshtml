@@ -1,4 +1,4 @@
-﻿@model BugTracker.Models.ManagementModels.AssignRolesIndexModel
+﻿@model BugTracker.Models.ManagementModels.RolesIndexModel
 
 @{
     ViewData["Title"] = "ManageRoles";
@@ -6,12 +6,12 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-6">
             <h2>Assign Roles</h2>
-            <form asp-controller="Management" asp-action="AssignRoles" method="post">
+            <form asp-controller="Management" asp-action="ManageRoles" method="post">
                 <div class="form-group">
                     <label asp-for="User" class="control-label"></label>
-                    <select class="form-control" asp-for="User">
+                    <select multiple class="form-control" asp-for="User">
                         @foreach (var username in Model.Usernames)
                         {
                             <option>@username</option>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Role" class="control-label"></label>
-                    <select class="form-control" asp-for="Role">
+                    <select multiple class="form-control" asp-for="Role">
                         @foreach (var role in Model.Roles)
                         {
                             <option>@role</option>
@@ -28,13 +28,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-dark" />
+                    <input type="submit" name="option" value="Assign" class="btn btn-dark" />
+                    <input type="submit" name="option" value="Remove" class="btn btn-dark" />
                 </div>
             </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-6">
             <h2>Add Roles</h2>
-            <form asp-controller="Management" asp-action="AddRoles" method="post">
+            <form asp-controller="Management" asp-action="ManageRoles" method="post">
                 <div class="form-group">
                     <label class="control-label">Role Title</label>
                     <input type="text" class="form-control" placeholder="Role title.." name="roleName">
@@ -43,10 +44,6 @@
                     <input type="submit" value="Add" class="btn btn-dark" />
                 </div>
             </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
             <h2>Delete Roles</h2>
             <form asp-controller="Management" asp-action="DeleteRoles" method="post">
                 <div class="form-group">
