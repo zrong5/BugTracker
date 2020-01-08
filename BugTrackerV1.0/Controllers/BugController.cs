@@ -1,11 +1,7 @@
 ﻿using System.Linq;
 using BugTracker.Models.BugModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BugTracker.Data;
-using BugTracker.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {

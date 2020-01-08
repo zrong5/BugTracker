@@ -1,12 +1,39 @@
 ﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div id="chart-div"></div>
+
 <script type="text/javascript">
-    google.charts.load('current', {
-        packages: ['corechart', 'bar']
-    });
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(LoadData);  
     function LoadData() {
         $.ajax({
-            url: 'Bug/'
+            url: 'DashboardChart/PopulateUrgencyGraph',
+            dataType: "Json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.response + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                PopulateUrgencyChart(data);
+                return false;
+            }
         });
+        return false;
+    }
+    function PopulateUrgencyChart(data) {
+        var dataArray = [
+            ['Urgency Level', '# Tickets']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.urgencyName, item.numberOfBugs]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            'title': 'Tickets By Urgency',
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart-div'));
+        chart.draw(data, options);
         return false;
     }
 </script>
