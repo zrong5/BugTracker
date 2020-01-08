@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
     google.charts.load('current', { packages: ['corechart', 'bar'] });
-    google.charts.setOnLoadCallback(LoadDataByUrgency);  
+    google.charts.setOnLoadCallback(LoadDataByUrgency);
     function LoadDataByUrgency() {
         $.ajax({
             url: 'DashboardChart/PopulateUrgencyGraph',
@@ -15,18 +15,18 @@
                 toastr.error(err.message);
             },
             success: function (data) {
-                PopulateUrgencyChart(data);
+                PopulateStatusChart(data);
                 return false;
             }
         });
         return false;
     }
-    function PopulateUrgencyChart(data) {
+    function PopulateStatusChart(data) {
         var dataArray = [
             ['Urgency', 'Tickets']
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.urgencyName, item.numberOfBugs]);
+            dataArray.push([item.statusName, item.numberOfBugs]);
         });
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
