@@ -1,10 +1,8 @@
-﻿using BugTracker.Data;
-using BugTracker.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BugTracker.Models.ManagementModels
 {
-    public class AssignProjectsIndexModel
+    public class ProjectIndexModel
     {
         public ProjectAssignmentUpdateModel UpdateModel { get; set; }
         public IEnumerable<ProjectListingModel> UserProjects { get; set; }

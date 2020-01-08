@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BugTracker.Data;
@@ -32,7 +31,7 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Roles")]
         public IActionResult ManageRoles()
         {
-            var model = new RolesIndexModel
+            var model = new RoleIndexModel
             {
                 Usernames = _userManager.Users.Select(user => user.UserName).ToList(),
                 Roles = _roleManager.Roles.Select(role => role.Name).ToList()
@@ -43,7 +42,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Manage Roles")]
-        public async Task<IActionResult> ManageRolesAssignment(RolesIndexModel model, string option)
+        public async Task<IActionResult> ManageRolesAssignment(RoleIndexModel model, string option)
         {
             if (ModelState.IsValid)
             {
@@ -60,19 +59,19 @@ namespace BugTracker.Controllers
         }
 
         [Authorize(Policy = "Manage Roles")]
-        public async Task<IActionResult> AssignUserToRole(RolesIndexModel model)
+        public async Task<IActionResult> AssignUserToRole(RoleIndexModel model)
         {
 
-            var user = await _userManager.FindByNameAsync(model.User);
-            await _userManager.AddToRoleAsync(user, model.Role);
+            var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
+            await _userManager.AddToRoleAsync(user, model.UpdateModel.Role);
             return RedirectToAction("ManageRoles", "Management");
         }
 
         [Authorize(Policy = "Manage Roles")]
-        public async Task<IActionResult> RemoveUserFromRole(RolesIndexModel model)
+        public async Task<IActionResult> RemoveUserFromRole(RoleIndexModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.User);
-            await _userManager.RemoveFromRoleAsync(user, model.Role);
+            var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
+            await _userManager.RemoveFromRoleAsync(user, model.UpdateModel.Role);
             return RedirectToAction("ManageRoles", "Management");
         }
 
@@ -129,7 +128,7 @@ namespace BugTracker.Controllers
                 });
 
             // list anyone that is not just a submitter
-            var model = new AssignProjectsIndexModel
+            var model = new ProjectIndexModel
             {
                 UserProjects = listingModel,
                 Projects = _bug.GetAllProjects().Select(result => result.Name),
@@ -143,7 +142,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult ManageProjects(AssignProjectsIndexModel model, string option)
+        public IActionResult ManageProjects(ProjectIndexModel model, string option)
         {
             // redirect to differect actions depending on which button is pressed
             if (ModelState.IsValid)
@@ -161,7 +160,7 @@ namespace BugTracker.Controllers
         }
 
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult AssignUserToProject(AssignProjectsIndexModel model)
+        public IActionResult AssignUserToProject(ProjectIndexModel model)
         {
             var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
             _user.AssignUserToProject(user, model.UpdateModel.ProjectName);
@@ -169,7 +168,7 @@ namespace BugTracker.Controllers
         }
 
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult RemoveUserFromProject(AssignProjectsIndexModel model)
+        public IActionResult RemoveUserFromProject(ProjectIndexModel model)
         {
             var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
             _user.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
