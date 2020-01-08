@@ -18,8 +18,5 @@ namespace BugTracker.Data
         IEnumerable<Team> GetAllTeams();
         IEnumerable<Urgency> GetAllUrgencies();
         IEnumerable<Project> GetAllProjects();
-        ICollection<MonthlyGraphModel> GetBugByMonthList(ApplicationUser user);
-        ICollection<StatusGraphModel> GetBugByStatusList(ApplicationUser user);
-        ICollection<UrgencyGraphModel> GetBugByUrgencyList(ApplicationUser user);
     }
 }

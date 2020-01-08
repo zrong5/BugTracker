@@ -27,6 +27,7 @@ namespace BugTracker
             services.AddSingleton(Configuration);
             services.AddScoped<IBug, BugService>();
             services.AddScoped<IUser, UserService>();
+            services.AddScoped<IChart, ChartService>();
             services.AddDbContext<TrackerContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
 

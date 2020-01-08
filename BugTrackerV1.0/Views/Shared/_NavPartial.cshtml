@@ -4,7 +4,7 @@
 <div class="list-group list-group-flush">
     @if ((await AuthorizationService.AuthorizeAsync(User, "View Dashboard")).Succeeded)
     {
-        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Home" asp-action="Index">Dashboard</a>
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="DashboardChart" asp-action="Index">Dashboard</a>
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, "Submit Bugs")).Succeeded)
     {

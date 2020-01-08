@@ -2,12 +2,12 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <div class="container">
     <div class="row">
         <div class="col-sm">
             <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
-                
+                <partial name="_BugsByUrgencyGraphPartial" />
                 <div class="card-body">
                     <p>Tickets By Urgency</p>
                 </div>

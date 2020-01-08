@@ -12,12 +12,10 @@ namespace BugTracker.Controllers
     public class BugController : Controller
     {
         private readonly IBug _bugs;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public BugController(IBug bugs,
-            UserManager<ApplicationUser> userManager)
+        
+        public BugController(IBug bugs)
         {
             _bugs = bugs;
-            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -75,34 +73,6 @@ namespace BugTracker.Controllers
                 _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus);
             }
             return LocalRedirect("/Bug/Detail/" + Id);
-        }
-
-        [Authorize(Policy = "View Dashboard")]
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> PopulateStatusGraph()
-        {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var statusList = _bugs.GetBugByStatusList(user);
-            return Json(statusList);
-        }
-        [HttpGet]
-        public async Task<JsonResult> PopulateMonthlyGraph()
-        {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var monthList = _bugs.GetBugByMonthList(user);
-            return Json(monthList);
-        }
-        [HttpGet]
-        public async Task<JsonResult> PopulateUrgencyGraph()
-        {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var urgencyList = _bugs.GetBugByUrgencyList(user);
-            return Json(urgencyList);
         }
     }
 }
