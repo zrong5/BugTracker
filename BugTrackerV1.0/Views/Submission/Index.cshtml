@@ -3,42 +3,51 @@
     ViewData["Title"] = "Index";
 }
 
-<form class="submissionForm" asp-controller="Submission" asp-action="Submit" method="post">
-    <div class="form-group">
-        <label>Title</label>
-        <input type="text" class="form-control" placeholder="Bug Title.." asp-for="Title">
-    </div>
-    <div class="form-group">
-        <label>Project</label>
-        <select class="form-control" asp-for="ProjectAffected">
-            @foreach (var project in Model.Options.ProjectOptions)
-            {
-                <option>@project.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Urgency</label>
-        <select class="form-control" asp-for="Urgency">
-            @foreach (var urgency in Model.Options.UrgencyOptions)
-            {
-                <option>@urgency.Level</option>
-            }
+<div class="row justify-content-center" style="margin-top:15px">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                Submission
+            </div>
+            <form class="submissionForm" asp-controller="Submission" asp-action="Submit" method="post" style="padding:15px">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" placeholder="Bug Title.." asp-for="Title">
+                </div>
+                <div class="form-group">
+                    <label>Project</label>
+                    <select class="form-control" asp-for="ProjectAffected">
+                        @foreach (var project in Model.Options.ProjectOptions)
+                        {
+                            <option>@project.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Urgency</label>
+                    <select class="form-control" asp-for="Urgency">
+                        @foreach (var urgency in Model.Options.UrgencyOptions)
+                        {
+                            <option>@urgency.Level</option>
+                        }
 
-        </select>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assign To Team</label>
+                    <select class="form-control" asp-for="Team">
+                        @foreach (var team in Model.Options.TeamOptions)
+                        {
+                            <option>@team.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="bugDescription" rows="3" asp-for="Description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Assign To Team</label>
-        <select class="form-control" asp-for="Team">
-            @foreach (var team in Model.Options.TeamOptions)
-            {
-                <option>@team.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea class="form-control" id="bugDescription" rows="3" asp-for="Description"></textarea>
-    </div>
-    <button type="submit" class="btn btn-dark">Submit</button>
-</form>
+</div>
