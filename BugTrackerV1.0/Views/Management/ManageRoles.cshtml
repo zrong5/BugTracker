@@ -6,59 +6,100 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-6">
-            <h2>Assign Roles</h2>
-            <form asp-controller="Management" asp-action="ManageRoles" method="post">
-                <div class="form-group">
-                    <label asp-for="UpdateModel.User" class="control-label"></label>
-                    <select multiple class="form-control" asp-for="UpdateModel.User">
-                        @foreach (var username in Model.Usernames)
-                        {
-                            <option>@username</option>
-                        }
-                    </select>
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    Assign Roles
                 </div>
-                <div class="form-group">
-                    <label asp-for="UpdateModel.Role" class="control-label"></label>
-                    <select multiple class="form-control" asp-for="UpdateModel.Role">
-                        @foreach (var role in Model.Roles)
-                        {
-                            <option>@role</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="submit" name="option" value="Assign" class="btn btn-dark" />
-                    <input type="submit" name="option" value="Remove" class="btn btn-dark" />
-                </div>
-            </form>
+                <form asp-controller="Management" asp-action="ManageRolesAssignment" method="post" style="padding:15px">
+                    <div class="form-group">
+                        <label asp-for="UpdateModel.User" class="control-label"></label>
+                        <select multiple class="form-control" asp-for="UpdateModel.User">
+                            @foreach (var username in Model.Usernames)
+                            {
+                                <option>@username</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UpdateModel.Role" class="control-label"></label>
+                        <select multiple class="form-control" asp-for="UpdateModel.Role">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <option>@role</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="option" value="Assign" class="btn btn-info" />
+                        <input type="submit" name="option" value="Remove" class="btn btn-info" />
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="col-6">
-            <h2>Add Roles</h2>
-            <form asp-controller="Management" asp-action="ManageRoles" method="post">
-                <div class="form-group">
-                    <label class="control-label">Role Title</label>
-                    <input type="text" class="form-control" placeholder="Role title.." name="roleName">
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    Add Roles
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Add" class="btn btn-dark" />
+                <form asp-controller="Management" asp-action="AddRoles" method="post" style="padding:15px">
+                    <div class="form-group">
+                        <label class="control-label">Role Title</label>
+                        <input type="text" class="form-control" placeholder="Role title.." name="roleName">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add" class="btn btn-info" />
+                    </div>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    Delete Roles
                 </div>
-            </form>
-            <h2>Delete Roles</h2>
-            <form asp-controller="Management" asp-action="DeleteRoles" method="post">
-                <div class="form-group">
-                    <label class="control-label">Role Title</label>
-                    <select class="form-control" name="roleName">
-                        @foreach (var role in Model.Roles)
+                <form asp-controller="Management" asp-action="DeleteRoles" method="post" style="padding:15px">
+                    <div class="form-group">
+                        <label class="control-label">Role Title</label>
+                        <select class="form-control" name="roleName">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <option>@role</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Delete" class="btn btn-info" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:15px">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    Employees
+                </div>
+                <table class="table table-striped">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">User</th>
+                            <th scope="col">Email Address</th>
+                            <th scope="col">Assigned Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.UserRoles)
                         {
-                            <option>@role</option>
+                            <tr>
+                                <td>@item.Username</td>
+                                <td>@item.EmailAddress</td>
+                                <td>@item.Roles</td>
+                            </tr>
                         }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Delete" class="btn btn-dark" />
-                </div>
-            </form>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

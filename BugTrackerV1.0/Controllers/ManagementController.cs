@@ -31,8 +31,16 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Roles")]
         public IActionResult ManageRoles()
         {
+            var listingModel = _user.GetAll()
+                .Select(result => new RoleListingModel
+                {
+                    Username = result.UserName,
+                    EmailAddress = result.Email,
+                    Roles = _user.GetAllRolesAsync(result, ',').Result
+                }) ;
             var model = new RoleIndexModel
             {
+                UserRoles = listingModel,
                 Usernames = _userManager.Users.Select(user => user.UserName).ToList(),
                 Roles = _roleManager.Roles.Select(role => role.Name).ToList()
             };
@@ -61,17 +69,24 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Roles")]
         public async Task<IActionResult> AssignUserToRole(RoleIndexModel model)
         {
-
-            var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
-            await _userManager.AddToRoleAsync(user, model.UpdateModel.Role);
+            if(!string.IsNullOrEmpty(model.UpdateModel.User) 
+                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+            {
+                var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
+                await _userManager.AddToRoleAsync(user, model.UpdateModel.Role);
+            }
             return RedirectToAction("ManageRoles", "Management");
         }
 
         [Authorize(Policy = "Manage Roles")]
         public async Task<IActionResult> RemoveUserFromRole(RoleIndexModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
-            await _userManager.RemoveFromRoleAsync(user, model.UpdateModel.Role);
+            if (!string.IsNullOrEmpty(model.UpdateModel.User)
+                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+            {
+                var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
+                await _userManager.RemoveFromRoleAsync(user, model.UpdateModel.Role);
+            }
             return RedirectToAction("ManageRoles", "Management");
         }
 
