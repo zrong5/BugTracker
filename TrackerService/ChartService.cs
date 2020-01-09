@@ -1,33 +1,53 @@
 ﻿using BugTracker.Data;
 using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace BugTracker.Service
 {
     public class ChartService : IChart
     {
         private readonly TrackerContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ChartService(TrackerContext context)
+        public ChartService(TrackerContext context,
+            UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
-        private IQueryable<Bug> AllBugsByUser(ApplicationUser user)
+
+        private async Task<IEnumerable<Bug>> AllBugsByUserAsync(ApplicationUser user)
         {
-            return _context.Bug
-                .Include(bug => bug.AssignedTo)
+            var allBugs = _context.Bug
                 .Include(bug => bug.Status)
+                .Include(bug => bug.ProjectAffected)
+                .Include(bug => bug.Owner)
+                .Include(bug => bug.LogDetail)
                 .Include(bug => bug.Urgency)
-                .Where(bug => bug.AssignedTo == user);
-        }
-        public ICollection<MonthlyGraphModel> GetBugByMonthList(ApplicationUser user)
+                .Include(bug => bug.CreatedBy)
+                .Include(bug => bug.ClosedBy);
+
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return allBugs;
+            }
+            else if(await _userManager.IsInRoleAsync(user, "Manager"))
+            {
+                var team = user.Team;
+                return allBugs.Where(bug => bug.AssignedTo.Team == team);
+            }
+            return allBugs.Where(bug => bug.AssignedTo == user);
+        }  
+
+        public async Task<ICollection<MonthlyGraphModel>> GetBugByMonthListAsync(ApplicationUser user)
         {
-            var allBugs = AllBugsByUser(user);
+            var allBugs = await AllBugsByUserAsync(user);
 
             var modelList = new List<MonthlyGraphModel>();
             for (var i = 0; i < 12; ++i)
@@ -50,9 +70,9 @@ namespace BugTracker.Service
             return modelList;
         }
 
-        public ICollection<StatusGraphModel> GetBugByStatusList(ApplicationUser user)
+        public async Task<ICollection<StatusGraphModel>> GetBugByStatusListAsync(ApplicationUser user)
         {
-            var allBugs = AllBugsByUser(user);
+            var allBugs = await AllBugsByUserAsync(user);
 
             var modelList = new List<StatusGraphModel>();
             var allStatus = _context.Status;
@@ -80,9 +100,9 @@ namespace BugTracker.Service
             return modelList;
         }
 
-        public ICollection<UrgencyGraphModel> GetBugByUrgencyList(ApplicationUser user)
+        public async Task<ICollection<UrgencyGraphModel>> GetBugByUrgencyListAsync(ApplicationUser user)
         {
-            var allBugs = AllBugsByUser(user);
+            var allBugs = await AllBugsByUserAsync(user);
             var modelList = new List<UrgencyGraphModel>();
             var allUrgency = _context.Urgency;
 

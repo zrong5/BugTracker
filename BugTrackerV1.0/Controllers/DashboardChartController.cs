@@ -3,6 +3,7 @@ using BugTracker.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BugTracker.Models.BugModels
 {
@@ -26,26 +27,26 @@ namespace BugTracker.Models.BugModels
 
         [HttpGet]
         [Authorize(Policy = "View Dashboard")]
-        public JsonResult PopulateStatusGraph()
+        public async Task<JsonResult> PopulateStatusGraphAsync()
         {
             var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
-            var statusList = _chart.GetBugByStatusList(user);
+            var statusList = await _chart.GetBugByStatusListAsync(user);
             return Json(statusList);
         }
         [HttpGet]
         [Authorize(Policy = "View Dashboard")]
-        public JsonResult PopulateMonthlyGraph()
+        public async Task<JsonResult> PopulateMonthlyGraphAsync()
         {
             var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
-            var monthList = _chart.GetBugByMonthList(user);
+            var monthList = await _chart.GetBugByMonthListAsync(user);
             return Json(monthList);
         }
         [HttpGet]
         [Authorize(Policy = "View Dashboard")]
-        public JsonResult PopulateUrgencyGraph()
+        public async Task<JsonResult> PopulateUrgencyGraphAsync()
         {
             var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
-            var urgencyList = _chart.GetBugByUrgencyList(user);
+            var urgencyList = await _chart.GetBugByUrgencyListAsync(user);
             return Json(urgencyList);
         }
     }
