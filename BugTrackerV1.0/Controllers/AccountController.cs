@@ -13,16 +13,13 @@ namespace BugTracker.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUser _user;
-        private readonly IBug _bug;
 
-        public AccountController(IBug bug,
+        public AccountController(IUser user,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IUser user)
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _bug = bug;
             _user = user;
         }
         [AllowAnonymous]
@@ -70,7 +67,6 @@ namespace BugTracker.Controllers
                     LastName = model.LastName,
                     UserName = await _user.CreateUniqueUsernameAsync(model.FirstName, model.LastName),
                     Email = model.Email,
-                    Team = _bug.GetTeamByName(model.Team)
                 };
 
                 if (await _user.IsUserUniqueAsync(user))

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BugTracker.Data;
 using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace BugTracker.Service
 {
@@ -32,7 +34,8 @@ namespace BugTracker.Service
                 .Include(bug => bug.LogDetail)
                 .Include(bug => bug.Urgency)
                 .Include(bug => bug.CreatedBy)
-                .Include(bug => bug.ClosedBy);
+                .Include(bug => bug.ClosedBy)
+                .Include(bug => bug.AssignedTo);
         }
 
         public IEnumerable<Project> GetAllProjects()
@@ -75,12 +78,6 @@ namespace BugTracker.Service
         {
             return GetAllProjects()
                 .FirstOrDefault(proj => proj.Name == projectName);
-        }
-
-        public Status GetStatusById(Guid Id)
-        {
-            return GetAllStatus()
-                .FirstOrDefault(s => s.Id == Id);
         }
 
         public Status GetStatusByName(string statusName)
@@ -137,7 +134,5 @@ namespace BugTracker.Service
             }
             _context.SaveChanges();
         }
-
-
     }
 }

@@ -29,7 +29,7 @@ namespace BugTracker.Models.BugModels
         [Authorize(Policy = "View Dashboard")]
         public async Task<JsonResult> PopulateStatusGraphAsync()
         {
-            var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var statusList = await _chart.GetBugByStatusListAsync(user);
             return Json(statusList);
         }
@@ -37,7 +37,7 @@ namespace BugTracker.Models.BugModels
         [Authorize(Policy = "View Dashboard")]
         public async Task<JsonResult> PopulateMonthlyGraphAsync()
         {
-            var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var monthList = await _chart.GetBugByMonthListAsync(user);
             return Json(monthList);
         }
@@ -45,7 +45,7 @@ namespace BugTracker.Models.BugModels
         [Authorize(Policy = "View Dashboard")]
         public async Task<JsonResult> PopulateUrgencyGraphAsync()
         {
-            var user = (_userManager.FindByNameAsync(User.Identity.Name)).Result;
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var urgencyList = await _chart.GetBugByUrgencyListAsync(user);
             return Json(urgencyList);
         }

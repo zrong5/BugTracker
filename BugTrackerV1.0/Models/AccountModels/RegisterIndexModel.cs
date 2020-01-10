@@ -18,8 +18,6 @@ namespace BugTracker.Models.AccountModels
         public string Email { get; set; }
         [Compare("Email", ErrorMessage = "Confirm email doesn't match, Type again !")]
         public string ConfirmEmail { get; set; }
-        [Required]
-        public string Team { get; set; }
     }
 }
 

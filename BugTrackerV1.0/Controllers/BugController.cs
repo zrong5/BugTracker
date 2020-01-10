@@ -2,20 +2,30 @@
 using BugTracker.Models.BugModels;
 using Microsoft.AspNetCore.Mvc;
 using BugTracker.Data;
+using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
     public class BugController : Controller
     {
         private readonly IBug _bugs;
-        
-        public BugController(IBug bugs)
+        private readonly IUserBug _userBug;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public BugController(IBug bugs,
+            UserManager<ApplicationUser> userManager,
+            IUserBug userBug)
         {
             _bugs = bugs;
+            _userManager = userManager;
+            _userBug = userBug;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            var bugModels = _bugs.GetAll();
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var bugModels = await _userBug.GetAllBugsByUserAsync(currentUser);
             var listingModel = bugModels
                 .Select(result => new BugListingModel
                 {
@@ -39,7 +49,11 @@ namespace BugTracker.Controllers
             var bug = _bugs.GetById(id);
             var detail = bug.LogDetail == null ? "" : bug.LogDetail.Detail;
             var createdByFullName = bug.CreatedBy.FirstName + " " + bug.CreatedBy.LastName + " @";
-            var closedByFullName = bug.ClosedBy.FirstName + " " + bug.ClosedBy.LastName + " @";
+            var closedByFullName = "";
+            if(bug.ClosedBy != null)
+            {
+                closedByFullName = bug.ClosedBy.FirstName + " " + bug.ClosedBy.LastName + " @";
+            }
             var model = new BugDetailModel()
             {
                 Id = id,

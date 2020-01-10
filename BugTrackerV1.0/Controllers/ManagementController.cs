@@ -16,15 +16,17 @@ namespace BugTracker.Controllers
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IUser _user;
         private readonly IBug _bug;
+        private readonly IUserBug _userBug;
         public ManagementController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
-            IUser user, IBug bug)
+            IUser user, IBug bug, IUserBug userBug)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _user = user;
             _bug = bug;
+            _userBug = userBug;
         }
 
 
@@ -131,7 +133,7 @@ namespace BugTracker.Controllers
         {
             var allProjects = _bug.GetAllProjects();
             var allUsers = _user.GetAll();
-            var userProjects = _user.GetAllUserProjects();
+            var userProjects = _userBug.GetAllUserProjects();
 
             // list anyone that is not just a submitter
             var listingModel = userProjects
@@ -180,7 +182,7 @@ namespace BugTracker.Controllers
         public IActionResult AssignUserToProject(ProjectIndexModel model)
         {
             var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
-            _user.AssignUserToProject(user, model.UpdateModel.ProjectName);
+            _userBug.AssignUserToProject(user, model.UpdateModel.ProjectName);
             return RedirectToAction("ManageProjects", "Management");
         }
 
@@ -188,7 +190,7 @@ namespace BugTracker.Controllers
         public IActionResult RemoveUserFromProject(ProjectIndexModel model)
         {
             var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
-            _user.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
+            _userBug.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
             return RedirectToAction("ManageProjects", "Management");
         }
 

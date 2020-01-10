@@ -28,6 +28,7 @@ namespace BugTracker
             services.AddScoped<IBug, BugService>();
             services.AddScoped<IUser, UserService>();
             services.AddScoped<IChart, ChartService>();
+            services.AddScoped<IUserBug, UserBugService>();
             services.AddDbContext<TrackerContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BugTracker.Data.Models;
 
 namespace BugTracker.Data

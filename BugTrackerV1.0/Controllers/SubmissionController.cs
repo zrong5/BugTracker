@@ -12,15 +12,15 @@ namespace BugTracker.Controllers
     public class SubmissionController : Controller
     {
         private readonly IBug _bug;
-        private readonly IUser _user;
+        private readonly IUserBug _userBug;
         private readonly UserManager<ApplicationUser> _userManager;
         public SubmissionController(IBug bug, 
             UserManager<ApplicationUser> userManager,
-            IUser user)
+            IUserBug userBug)
         {
             _bug = bug;
             _userManager = userManager;
-            _user = user;
+            _userBug = userBug;
         }
 
         [Authorize (Policy = "Submit Bugs")]
@@ -42,7 +42,7 @@ namespace BugTracker.Controllers
                 options = new SubmissionOptionsModel()
                 {
                     ProjectOptions = _bug.GetAllProjects(),
-                    TeamMemberOptions = _user.GetAllTeamMembers(user),
+                    TeamMemberOptions = _userBug.GetAllTeamMembers(user),
                     UrgencyOptions = _bug.GetAllUrgencies()
                 };
             }
