@@ -50,18 +50,11 @@ namespace BugTracker.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+
         [AllowAnonymous]
         public IActionResult Register()
         {
-            var optionsModel = new RegisterOptionsModel
-            {
-                TeamOptions = _bug.GetAllTeams()
-            };
-            var model = new RegisterIndexModel
-            {
-                Options = optionsModel
-            };
-            return View(model);
+            return View();
         }
 
         [HttpPost]
@@ -73,7 +66,9 @@ namespace BugTracker.Controllers
             {
                 var user = new ApplicationUser
                 {
-                    UserName = model.Username,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    UserName = await _user.CreateUniqueUsernameAsync(model.FirstName, model.LastName),
                     Email = model.Email,
                     Team = _bug.GetTeamByName(model.Team)
                 };

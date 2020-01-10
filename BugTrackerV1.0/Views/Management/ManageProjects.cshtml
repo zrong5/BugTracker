@@ -2,61 +2,62 @@
 @{
     ViewData["Title"] = "ManageProjects";
 }
-    <div class="row" style="margin-top:15px">
-        <div class="col-5">
-            <div class="card">
-                <div class="card-header bg-dark text-light">
-                    Manage Project Assignments
-                </div>
-                <form asp-controller="Management" asp-action="ManageProjects" method="post" style="padding:15px">
-                    <div class="form-group">
-                        <label asp-for="UpdateModel.Username" class="control-label text-dark"></label>
-                        <select asp-for="UpdateModel.Username" multiple class="form-control">
-                            @foreach (var username in Model.Users)
-                            {
-                                <option>@username</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="UpdateModel.ProjectName" class="control-label text-dark"></label>
-                        <select asp-for="UpdateModel.ProjectName" multiple class="form-control">
-                            @foreach (var project in Model.Projects)
-                            {
-                                <option>@project</option>
-                            }
-                        </select>
-                    </div>
-                    <input type="submit" name="option" value="Assign" class="btn btn-info" />
-                    <input type="submit" name="option" value="Remove" class="btn btn-info" />
-                </form>
+<div class="row" style="margin-top:15px">
+    <div class="col-5">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                Manage Project Assignments
             </div>
-        </div>
-        <div class="col-7">
-            <div class="card">
-                <div class="card-header bg-dark text-light">
-                    Employees
-                </div>
-                <table class="table table-striped">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">User</th>
-                            <th scope="col">Email Address</th>
-                            <th scope="col">Assigned To</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.UserProjects)
+            <form asp-controller="Management" asp-action="ManageProjects" method="post" style="padding:15px">
+                <div class="form-group">
+                    <label asp-for="UpdateModel.Username" class="control-label text-dark"></label>
+                    <select asp-for="UpdateModel.Username" multiple class="form-control">
+                        @foreach (var username in Model.Users)
                         {
-                            <tr>
-                                <td>@item.Username</td>
-                                <td>@item.EmailAddress</td>
-                                <td>@item.Project</td>
-                            </tr>
+                            <option>@username</option>
                         }
-                    </tbody>
-                </table>
-            </div>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UpdateModel.ProjectName" class="control-label text-dark"></label>
+                    <select asp-for="UpdateModel.ProjectName" multiple class="form-control">
+                        @foreach (var project in Model.Projects)
+                        {
+                            <option>@project</option>
+                        }
+                    </select>
+                </div>
+                <input type="submit" name="option" value="Assign" class="btn btn-info" />
+                <input type="submit" name="option" value="Remove" class="btn btn-info" />
+            </form>
         </div>
     </div>
-    
+    <div class="col-7">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                Employees
+            </div>
+            <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Email Address</th>
+                        <th scope="col">Assigned To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.UserProjects)
+                    {
+                        <tr>
+                            <td>@item.FullName</td>
+                            <td>@item.Username</td>
+                            <td>@item.EmailAddress</td>
+                            <td>@item.Project</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

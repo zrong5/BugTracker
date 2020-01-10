@@ -34,6 +34,7 @@ namespace BugTracker.Controllers
             var listingModel = _user.GetAll()
                 .Select(result => new RoleListingModel
                 {
+                    FullName = result.FirstName + " " + result.LastName,
                     Username = result.UserName,
                     EmailAddress = result.Email,
                     Roles = _user.GetAllRolesAsync(result, ',').Result
@@ -137,6 +138,7 @@ namespace BugTracker.Controllers
                 .Where(userProj => !((_userManager.IsInRoleAsync(userProj.User, "Submitter")).Result))
                 .Select(result => new ProjectListingModel
                 {
+                    FullName = result.User.FirstName + " " + result.User.LastName,
                     Username = result.User.UserName,
                     EmailAddress = result.User.Email,
                     Project = result.Project.Name

@@ -7,7 +7,9 @@ namespace BugTracker.Models.AccountModels
     public class RegisterIndexModel
     {
         [Required]
-        public string Username { get; set; }
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
         [Required]
         public string Password { get; set; }
         [Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
@@ -18,10 +20,6 @@ namespace BugTracker.Models.AccountModels
         public string ConfirmEmail { get; set; }
         [Required]
         public string Team { get; set; }
-        public RegisterOptionsModel Options { get; set; }
-    }
-    public class RegisterOptionsModel
-    {
-        public IEnumerable<Team> TeamOptions { get; set; }
     }
 }
+

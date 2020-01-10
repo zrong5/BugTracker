@@ -40,6 +40,19 @@ namespace BugTracker.Service
             }
         }
 
+        public async Task<string> CreateUniqueUsernameAsync(string firstName, string lastName)
+        {
+            var end = lastName.Length >= 6 ? 6 : lastName.Length;
+            var name = firstName[0] + lastName.Substring(0, end);
+            var random = new Random();
+            var randNum = random.Next(1, 100).ToString();
+            while (await _userManager.FindByNameAsync(name + randNum) != null)
+            {
+                randNum = random.Next(1, 100).ToString();
+            }
+            return name + randNum;
+        }
+
         public IEnumerable<ApplicationUser> GetAll()
         {
             return _context.Users

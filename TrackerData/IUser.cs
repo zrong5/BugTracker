@@ -14,5 +14,6 @@ namespace BugTracker.Data
         void RemoveUserFromProject(ApplicationUser user, string projectName);
         IEnumerable<UserProject> GetAllUserProjects();
         IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager);
+        Task<string> CreateUniqueUsernameAsync(string firstName, string lastName);
     }
 }
