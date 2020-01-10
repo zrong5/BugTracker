@@ -13,8 +13,8 @@ namespace BugTracker.Models.SubmissionModels
         public string Description { get; set; }
         [Required]
         public string Urgency { get; set; }
-        [Required]
         public string Team { get; set; }
+        public string TeamMember { get; set; }
         [Required]
         public string ProjectAffected { get; set; }
         public SubmissionOptionsModel Options { get; set; }
@@ -22,6 +22,7 @@ namespace BugTracker.Models.SubmissionModels
     public class SubmissionOptionsModel
     {
         public IEnumerable<Team> TeamOptions { get; set; }
+        public IEnumerable<ApplicationUser> TeamMemberOptions { get; set; }
         public IEnumerable<Urgency> UrgencyOptions { get; set; }
         public IEnumerable<Project> ProjectOptions { get; set; }
     }

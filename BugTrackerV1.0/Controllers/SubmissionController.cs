@@ -5,26 +5,48 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BugTracker.Data;
 using BugTracker.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
 {
     public class SubmissionController : Controller
     {
         private readonly IBug _bug;
+        private readonly IUser _user;
         private readonly UserManager<ApplicationUser> _userManager;
-        public SubmissionController(IBug bug, UserManager<ApplicationUser> userManager)
+        public SubmissionController(IBug bug, 
+            UserManager<ApplicationUser> userManager,
+            IUser user)
         {
             _bug = bug;
             _userManager = userManager;
+            _user = user;
         }
-        public IActionResult Index()
+
+        [Authorize (Policy = "Submit Bugs")]
+        public IActionResult IndexAsync()
         {
-            var options = new SubmissionOptionsModel()
+            SubmissionOptionsModel options = null;
+            var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            if (User.IsInRole("Admin"))
             {
-                ProjectOptions = _bug.GetAllProjects(),
-                TeamOptions = _bug.GetAllTeams(),
-                UrgencyOptions = _bug.GetAllUrgencies()
-            };
+                options = new SubmissionOptionsModel()
+                {
+                    ProjectOptions = _bug.GetAllProjects(),
+                    TeamOptions = _bug.GetAllTeams(),
+                    UrgencyOptions = _bug.GetAllUrgencies()
+                };
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                options = new SubmissionOptionsModel()
+                {
+                    ProjectOptions = _bug.GetAllProjects(),
+                    TeamMemberOptions = _user.GetAllTeamMembers(user),
+                    UrgencyOptions = _bug.GetAllUrgencies()
+                };
+            }
+            
             var model = new SubmissionIndexModel()
             {
                 Options = options   
@@ -33,6 +55,7 @@ namespace BugTracker.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Submit Bugs")]
         public async Task<IActionResult> Submit(SubmissionIndexModel model)
         {
             int redirectId = 0;

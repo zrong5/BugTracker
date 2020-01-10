@@ -1,11 +1,17 @@
 use TrackerDev;
+
+
+
 insert into 
 Team (Id, Name) 
 values
 (NEWID(), 'Front-End'),
 (NEWID(), 'Back-End'),
 (NEWID(), 'DevOps'),
-(NEWID(), 'DBA');
+(NEWID(), 'DBA'),
+(NEWID(), 'SysEng'),
+(NEWID(), 'NetEng'),
+(NEWID(), 'DataScience');
 
 insert into
 ProcessLog(Detail)
@@ -41,15 +47,6 @@ values
 (NEWID(),'Checkout-Api','Design and implement a light weight API for checkout and transaction process','3494bb7b-051b-43e6-9d30-953d9395bb46'),
 (NEWID(),'Star-link Update','Design and implement a database system using MongoDB','f775aa1f-79b9-40b6-98dd-a5df5ce60f93');
 
-
---insert into
---Bug(Title, Description, UrgencyId, CreatedOn, 
---ProjectAffectedId, StatusId, ClosedOn, LogDetailId, OwnerId)
---values
---('Stuff', 'Front-end fucked. Please fix some stuff.', 1, SYSDATETIME(),1,1,null,1,1),
---('Bug', 'Backend fucked. Quick fix needed.', 2, SYSDATETIME(), 2,2,null,2,2),
---('Shitstorm', 'Some stuff fucked. Please fix some stuff.', 3, SYSDATETIME(), 3, 3,null,3,3),
---('HolyFuck', 'Db fucked. Please fix that shitty stuff.', 4, SYSDATETIME(), 4, 4,null,4,4);
 
 insert into
 Bug(Title, Description, UrgencyId, CreatedOn, CreatedById,

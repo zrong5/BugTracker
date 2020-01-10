@@ -1,4 +1,6 @@
 ﻿@model BugTracker.Models.SubmissionModels.SubmissionIndexModel
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "Index";
 }
@@ -10,43 +12,70 @@
                 Submission
             </div>
             <form class="submissionForm" asp-controller="Submission" asp-action="Submit" method="post" style="padding:15px">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" class="form-control" placeholder="Bug Title.." asp-for="Title">
-                </div>
-                <div class="form-group">
-                    <label>Project</label>
-                    <select class="form-control" asp-for="ProjectAffected">
-                        @foreach (var project in Model.Options.ProjectOptions)
-                        {
-                            <option>@project.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Urgency</label>
-                    <select class="form-control" asp-for="Urgency">
-                        @foreach (var urgency in Model.Options.UrgencyOptions)
-                        {
-                            <option>@urgency.Level</option>
-                        }
+                @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Submitter Permission")).Succeeded)
+                {
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" placeholder="Bug Title.." asp-for="Title">
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Submitter Permission")).Succeeded)
+                {
+                    <div class="form-group">
+                        <label>Project</label>
+                        <select class="form-control" asp-for="ProjectAffected">
+                            @foreach (var project in Model.Options.ProjectOptions)
+                            {
+                                <option>@project.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Developer Permission")).Succeeded)
+                {
+                    <div class="form-group">
+                        <label>Urgency</label>
+                        <select class="form-control" asp-for="Urgency">
+                            @foreach (var urgency in Model.Options.UrgencyOptions)
+                            {
+                                <option>@urgency.Level</option>
+                            }
 
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Assign To Team</label>
-                    <select class="form-control" asp-for="Team">
-                        @foreach (var team in Model.Options.TeamOptions)
-                        {
-                            <option>@team.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="bugDescription" rows="3" asp-for="Description"></textarea>
-                </div>
-                <button type="submit" class="btn btn-info">Submit</button>
+                        </select>
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        <label asp-for="Team">Assign To Team</label>
+                        <select class="form-control" asp-for="Team">
+                            @foreach (var team in Model.Options.TeamOptions)
+                            {
+                                <option>@team.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Manager"))
+                {
+                    <div class="form-group">
+                        <label asp-for="TeamMember">Assign To Team Member</label>
+                        <select class="form-control" asp-for="TeamMember">
+                            @foreach (var teamMember in Model.Options.TeamMemberOptions)
+                            {
+                                <option>@teamMember.UserName</option>
+                            }
+                        </select>
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Submitter Permission")).Succeeded)
+                {
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="bugDescription" rows="3" asp-for="Description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-info">Submit</button>
+                }
             </form>
         </div>
     </div>

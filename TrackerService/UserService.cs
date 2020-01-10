@@ -61,6 +61,12 @@ namespace BugTracker.Service
             return concatRoles;
         }
 
+        public IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager)
+        {
+            var team = manager.Team;
+            return GetAll().Where(user => user.Team == team);
+        }
+
         public IEnumerable<UserProject> GetAllUserProjects()
         {
             return _context.UserProject;

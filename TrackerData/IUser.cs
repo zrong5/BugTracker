@@ -13,5 +13,6 @@ namespace BugTracker.Data
         void AssignUserToProject(ApplicationUser user, string projectName);
         void RemoveUserFromProject(ApplicationUser user, string projectName);
         IEnumerable<UserProject> GetAllUserProjects();
+        IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager);
     }
 }
