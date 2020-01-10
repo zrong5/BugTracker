@@ -8,10 +8,11 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Title</th>
-            <th scope="col">Urgency</th>
             <th scope="col">Team</th>
+            <th scope="col">Developer Assigned</th>
+            <th scope="col">Urgency</th>
             <th scope="col">Status</th>
-            <th scope="col">CreatedOn</th>
+            <th scope="col">Created</th>
         </tr>
     </thead>
     <tbody>
@@ -20,8 +21,9 @@
             <tr onclick="location.href = '@(Url.Action("Detail", "Bug", new { id = bug.Id }))'">
                 <th scope="row">@bug.Id</th>
                 <td>@bug.Title</td>
-                <td>@bug.Urgency</td>
                 <td>@bug.Team</td>
+                <td>@bug.AssignedTo</td>
+                <td>@bug.Urgency</td>
                 <td>@bug.Status</td>
                 <td>@bug.CreatedOn</td>
             </tr>

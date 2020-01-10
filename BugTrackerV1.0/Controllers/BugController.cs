@@ -24,7 +24,9 @@ namespace BugTracker.Controllers
                     Urgency = result.Urgency.Level,
                     Status = result.Status.Name,
                     Team = result.Owner.Name,
-                    CreatedOn = result.CreatedOn
+                    CreatedOn = result.CreatedOn,
+                    AssignedTo = result.AssignedTo.FirstName + " " 
+                        + result.AssignedTo.LastName
                 });
             var model = new BugIndexModel()
             {
@@ -36,6 +38,8 @@ namespace BugTracker.Controllers
         {
             var bug = _bugs.GetById(id);
             var detail = bug.LogDetail == null ? "" : bug.LogDetail.Detail;
+            var createdByFullName = bug.CreatedBy.FirstName + " " + bug.CreatedBy.LastName + " @";
+            var closedByFullName = bug.ClosedBy.FirstName + " " + bug.ClosedBy.LastName + " @";
             var model = new BugDetailModel()
             {
                 Id = id,
@@ -47,9 +51,9 @@ namespace BugTracker.Controllers
                 Description = bug.Description,
                 Urgency = bug.Urgency.Level,
                 CreatedOn = bug.CreatedOn,
-                CreatedBy = bug.CreatedBy.UserName,
+                CreatedBy = createdByFullName + bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
-                ClosedBy = bug.ClosedBy == null ? "" : bug.ClosedBy.UserName,
+                ClosedBy = bug.ClosedBy == null ? "" : closedByFullName + bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus(),
                 UpdateDetail = new BugUpdateModel()
             };

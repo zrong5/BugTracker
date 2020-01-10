@@ -10,10 +10,5 @@ namespace BugTracker.Data.Models
         public Team Team { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
-        public static implicit operator ApplicationUser(ApplicationUser v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -68,6 +68,7 @@ namespace BugTracker.Controllers
                     Urgency = _bug.GetUrgencyByName(model.Urgency),
                     Title = model.Title,
                     Owner = _bug.GetTeamByName(model.Team),
+                    AssignedTo = model.TeamMember == null? null: await _userManager.FindByNameAsync(model.TeamMember),
                     CreatedOn = now,
                     Description = model.Description,
                     LogDetail = _bug.CreateEmptyLog(),
