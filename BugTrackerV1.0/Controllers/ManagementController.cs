@@ -189,5 +189,11 @@ namespace BugTracker.Controllers
             _user.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
             return RedirectToAction("ManageProjects", "Management");
         }
+
+        [Authorize(Policy = "Admin Permission")]
+        public IActionResult ManageTeams()
+        {
+            return View();
+        }
     }
 }
