@@ -74,7 +74,9 @@ namespace BugTracker.Service
 
         public string GetTeamName(ApplicationUser user)
         {
-            return user.Team.Name;
+            return _userManager.Users
+                .Include(user => user.Team)
+                .FirstOrDefault(u => u == user).Team.Name;
         }
 
         public async Task<bool> IsUserUniqueAsync(ApplicationUser user)

@@ -126,10 +126,10 @@ namespace BugTracker.Controllers
         {
             var userName = User.Identity.Name;
             var currentUser = await _userManager.FindByNameAsync(userName);
-
             // generate new view model to send 
             var model = new UserProfileModel()
             {
+                FullName = currentUser.FirstName + " " + currentUser.LastName,
                 EmailAddress = currentUser.Email,
                 Team = _user.GetTeamName(currentUser),
                 UserName = userName,

@@ -3,14 +3,17 @@
     ViewData["Title"] = "UserProfile";
 }
 
-    <div class="primary-background container" style="padding:10px">
-        <p class="text-light">@Model.UserName</p>
+    <div class="container" style="padding:10px">
+        <div class="primary-background" >
+            <p class="text-light">@Model.FullName @@@Model.UserName</p>
+        </div>
+        <div class="contarounded profile-block bg-light" style="padding:10px">
+            <label>Email: </label>
+            <p>@Model.EmailAddress</p>
+            <label>Role: </label>
+            <p>@Model.Role</p>
+            <label>Team: </label>
+            <p>@Model.Team</p>
+        </div>
     </div>
-    <div class="container rounded profile-block bg-light" style="padding:10px">
-        <label>Email: </label>
-        <p>@Model.EmailAddress</p>
-        <label>Role: </label>
-        <p>@Model.Role</p>
-        <label>Team: </label>
-        <p>@Model.Team</p>
-    </div>
+    
