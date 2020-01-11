@@ -76,7 +76,7 @@ namespace BugTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -111,7 +111,9 @@ namespace BugTracker.Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    TeamId = table.Column<Guid>(nullable: false)
+                    TeamId = table.Column<Guid>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -121,7 +123,7 @@ namespace BugTracker.Data.Migrations
                         column: x => x.TeamId,
                         principalTable: "Team",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -149,7 +151,7 @@ namespace BugTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -234,13 +236,14 @@ namespace BugTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "DateTime", nullable: false),
                     ClosedOn = table.Column<DateTime>(type: "DateTime", nullable: true),
                     CreatedById = table.Column<Guid>(nullable: false),
                     ClosedById = table.Column<Guid>(nullable: true),
+                    AssignedToId = table.Column<Guid>(nullable: true),
                     ProjectAffectedId = table.Column<Guid>(nullable: true),
                     OwnerId = table.Column<Guid>(nullable: true),
                     UrgencyId = table.Column<Guid>(nullable: true),
@@ -250,6 +253,12 @@ namespace BugTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bug", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bug_AspNetUsers_AssignedToId",
+                        column: x => x.AssignedToId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bug_AspNetUsers_ClosedById",
                         column: x => x.ClosedById,
@@ -294,6 +303,31 @@ namespace BugTracker.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserProject",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: true),
+                    ProjectId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProject", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProject_Project_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserProject_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -303,8 +337,7 @@ namespace BugTracker.Data.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -330,13 +363,17 @@ namespace BugTracker.Data.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_TeamId",
                 table: "AspNetUsers",
                 column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bug_AssignedToId",
+                table: "Bug",
+                column: "AssignedToId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bug_ClosedById",
@@ -377,6 +414,16 @@ namespace BugTracker.Data.Migrations
                 name: "IX_Project_OwnerId",
                 table: "Project",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProject_ProjectId",
+                table: "UserProject",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProject_UserId",
+                table: "UserProject",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -400,22 +447,25 @@ namespace BugTracker.Data.Migrations
                 name: "Bug");
 
             migrationBuilder.DropTable(
+                name: "UserProject");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "ProcessLog");
-
-            migrationBuilder.DropTable(
-                name: "Project");
 
             migrationBuilder.DropTable(
                 name: "Status");
 
             migrationBuilder.DropTable(
                 name: "Urgency");
+
+            migrationBuilder.DropTable(
+                name: "Project");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Team");

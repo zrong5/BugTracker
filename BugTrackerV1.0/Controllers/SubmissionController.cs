@@ -39,7 +39,6 @@ namespace BugTracker.Controllers
             }
             else if (User.IsInRole("Manager"))
             {
-                var t = await _userBug.GetAllTeamMembersAsync(user);
                 options = new SubmissionOptionsModel()
                 {
                     ProjectOptions = _bug.GetAllProjects(),

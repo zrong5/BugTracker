@@ -29,9 +29,10 @@ namespace BugTracker
             services.AddScoped<IUser, UserService>();
             services.AddScoped<IChart, ChartService>();
             services.AddScoped<IUserBug, UserBugService>();
-            services.AddDbContext<TrackerContext>(options
-                => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
-
+            // services.AddDbContext<TrackerContext>(options
+            // => options.UseSqlServer(Configuration.GetConnectionString("TrackerConnection")));
+            services.AddDbContext<TrackerContext>(options =>
+            options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
