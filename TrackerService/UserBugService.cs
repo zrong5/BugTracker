@@ -87,14 +87,21 @@ namespace BugTracker.Service
                 return _userManager.Users
                     .Include(user => user.Team);
             }
+            var team = _userManager.Users
+                    .Include(user => user.Team)
+                    .FirstOrDefault(u => u.Id == user.Id)
+                    .Team;
+
             return _userManager.Users
                 .Include(user => user.Team)
-                .Where(u => u.Team == user.Team);
+                .Where(u => u.Team == team);
         }
 
         public IEnumerable<UserProject> GetAllUserProjects()
         {
-            return _context.UserProject;
+            return _context.UserProject
+                .Include(up => up.Project)
+                .Include(up => up.User);
         }
 
         public async Task<IEnumerable<Project>> GetAllProjectByUserAsync(ApplicationUser user)

@@ -24,7 +24,7 @@ namespace BugTracker.Controllers
         }
 
         [Authorize (Policy = "Submit Bugs")]
-        public IActionResult IndexAsync()
+        public async Task<IActionResult> IndexAsync()
         {
             SubmissionOptionsModel options = null;
             var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
@@ -39,10 +39,11 @@ namespace BugTracker.Controllers
             }
             else if (User.IsInRole("Manager"))
             {
+                var t = await _userBug.GetAllTeamMembersAsync(user);
                 options = new SubmissionOptionsModel()
                 {
                     ProjectOptions = _bug.GetAllProjects(),
-                    TeamMemberOptions = _userBug.GetAllTeamMembersAsync(user),
+                    TeamMemberOptions = await _userBug.GetAllTeamMembersAsync(user),
                     UrgencyOptions = _bug.GetAllUrgencies()
                 };
             }

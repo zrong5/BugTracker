@@ -75,7 +75,7 @@ namespace BugTracker.Controllers
                 ClosedOn = bug.ClosedOn,
                 ClosedBy = bug.ClosedBy == null ? "" : closedByFullName + bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus().Select(status => status.Name),
-                DeveloperOptions = _userBug.GetAllTeamMembersAsync(currentUser).Select(member => member.UserName),
+                DeveloperOptions = (await _userBug.GetAllTeamMembersAsync(currentUser)).Select(member => member.UserName),
                 UpdateDetail = new BugUpdateModel()
             };  
             return View(model);

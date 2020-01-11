@@ -137,7 +137,6 @@ namespace BugTracker.Controllers
 
             // list anyone that is not just a submitter
             var listingModel = userProjects
-                .Where(userProj => !((_userManager.IsInRoleAsync(userProj.User, "Submitter")).Result))
                 .Select(result => new ProjectListingModel
                 {
                     FullName = result.User.FirstName + " " + result.User.LastName,
