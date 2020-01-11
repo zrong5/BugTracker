@@ -9,6 +9,7 @@ namespace BugTracker.Models.BugModels
         public int Id { get; set; }
         public string Title { get; set; }
         public string Team { get; set; }
+        public string AssignedTo { get; set; }
         public string Status { get; set; }
         public string Project { get; set; }
         public string Description { get; set; }
@@ -18,7 +19,8 @@ namespace BugTracker.Models.BugModels
         public string CreatedBy { get; set; }
         public string ClosedBy { get; set; }
         public DateTime? ClosedOn { get; set; }
-        public IEnumerable<Status> StatusOptions { get; set; }
+        public IEnumerable<string> StatusOptions { get; set; }
+        public IEnumerable<string> DeveloperOptions{ get; set; }
         public BugUpdateModel UpdateDetail { get; set; }
     }
     public class BugUpdateModel
@@ -26,5 +28,6 @@ namespace BugTracker.Models.BugModels
         public string NewStatus { get; set; }
         public int Id { get; set; }
         public string UpdateToLog { get; set; }
+        public string AssignedTo { get; set; }
     }
 }

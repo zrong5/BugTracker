@@ -79,6 +79,5 @@ namespace BugTracker.Service
             return false;
         }
 
-
     }
 }

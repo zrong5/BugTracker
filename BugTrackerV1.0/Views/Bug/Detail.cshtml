@@ -15,8 +15,23 @@
                     <p class="lead">@Model.Title</p>
                 </div>
                 <div class="form-group">
-                    <label for="">Assigned To</label>
-                    <p class="lead">@Model.Team</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <label for="">Assigned To Team</label>
+                        <p class="lead">@Model.Team</p>
+                    }
+                    else if(User.IsInRole("Manager"))
+                    {
+                        <div class="form-group">
+                            <label asp-for="UpdateDetail.AssignedTo" class="control-label"></label>
+                            <select class="form-control" asp-for="UpdateDetail.AssignedTo">
+                                @foreach (var username in Model.DeveloperOptions)
+                                {
+                                    <option>@username</option>
+                                }
+                            </select>
+                        </div>
+                    }
                 </div>
                 <div class="form-group">
                     <label for="BugTitle">Created On</label>
@@ -50,13 +65,13 @@
                     <select asp-for="UpdateDetail.NewStatus" class="form-control">
                         @foreach (var status in Model.StatusOptions)
                         {
-                            if (status.Name == Model.Status)
+                            if (status == Model.Status)
                             {
-                                <option selected>@status.Name</option>
+                                <option selected>@status</option>
                             }
                             else
                             {
-                                <option>@status.Name</option>
+                                <option>@status</option>
                             }
                         }
                     </select>

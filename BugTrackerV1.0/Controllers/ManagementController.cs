@@ -40,7 +40,7 @@ namespace BugTracker.Controllers
                     Username = result.UserName,
                     EmailAddress = result.Email,
                     Roles = _user.GetAllRolesAsync(result, ',').Result
-                }) ;
+                });
             var model = new RoleIndexModel
             {
                 UserRoles = listingModel,
@@ -127,7 +127,6 @@ namespace BugTracker.Controllers
             return RedirectToAction("ManageRoles", "Management");
         }
 
-
         [Authorize(Policy = "Manage Projects")]
         public IActionResult ManageProjects()
         {
@@ -197,7 +196,82 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Admin Permission")]
         public IActionResult ManageTeams()
         {
-            return View();
+            var listingModel = _user.GetAll()
+                .Select(result => new TeamListingModel
+                {
+                    FullName = result.FirstName + " " + result.LastName,
+                    Username = result.UserName,
+                    Email = result.Email,
+                    Team = _user.GetTeamName(result),
+                    Role = _user.GetAllRolesAsync(result, ',').Result
+                });
+            var model = new TeamIndexModel
+            {
+                UserTeams = listingModel,
+                Usernames = _userManager.Users.Select(user => user.UserName).ToList(),
+                Teams = _bug.GetAllTeams().Select(team => team.Name).ToList(),
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin Permission")]
+        public async Task<IActionResult> AssignTeamsAsync(TeamIndexModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var updateModel = model.UpdateModel;
+                if (!string.IsNullOrEmpty(updateModel.Username)
+                    && !string.IsNullOrEmpty(updateModel.Team))
+                {
+                    var user = await _userManager.FindByNameAsync(updateModel.Username);
+                    var succeeded = _userBug.AssignUserToTeam(user, updateModel.Team);
+                    if (succeeded)
+                    {
+                        return RedirectToAction("ManageTeams", "Management");
+                    }
+                }
+            }
+            return RedirectToAction("ManageTeams", "Management");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin Permission")]
+        public IActionResult AddTeams(string teamName)
+        {
+            if (ModelState.IsValid)
+            {
+                var team = _bug.GetTeamByName(teamName);
+                if (team == null) 
+                {
+                    var newTeam = new Team
+                    {
+                        Name = teamName
+                    };
+                    _userBug.AddTeam(newTeam);
+                    return RedirectToAction("ManageTeams", "Management");
+                }
+            }
+            return RedirectToAction("ManageTeams", "Management");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin Permission")]
+        public IActionResult DeleteTeams(string teamName)
+        {
+            if (ModelState.IsValid)
+            {
+                var team = _bug.GetTeamByName(teamName);
+                if(team != null)
+                {
+                    _userBug.DeleteTeam(team);
+                    return RedirectToAction("ManageTeams", "Management");
+                }
+            }
+            return RedirectToAction("ManageTeams", "Management");
         }
     }
 }

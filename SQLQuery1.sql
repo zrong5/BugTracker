@@ -26,3 +26,6 @@ update dbo.AspNetUsers set FirstName = 'John', LastName = 'Taylor' where Id = 'f
 update dbo.AspNetUsers set FirstName = 'Eileen', LastName = 'Lee' where Id = 'c59f753e-2341-4324-d8f8-08d792fb15fa';
 update dbo.AspNetUsers set FirstName = 'Terri', LastName = 'Pica' where Id = 'ad08d5e0-69f1-4658-0a2d-08d792fb7461';
 update dbo.AspNetUsers set FirstName = 'Thomas', LastName = 'Stewart' where Id = 'a8cadbcf-2c86-4c1d-d8f9-08d792fb15fa';
+
+
+select UserName from dbo.AspNetUsers where 

@@ -2,6 +2,7 @@
 using BugTracker.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace BugTracker.Service
             _context = context;
             _userManager = userManager;
         }
-        public void AssignUserToProject(ApplicationUser user, string projectName)
+        public bool AssignUserToProject(ApplicationUser user, string projectName)
         {
             var project = _context.Project
                 .FirstOrDefault(project => project.Name == projectName);
@@ -32,11 +33,13 @@ namespace BugTracker.Service
                 .Where(userProj => userProj.User == user && userProj.Project == project)
                 .Any();
 
-            if (!alreadyAssigned)
+            if (project != null && !alreadyAssigned)
             {
                 _context.Add(userProject);
                 _context.SaveChanges();
+                return true;
             }
+            return false;
         }
 
         protected IEnumerable<Bug> GetAllBugs()
@@ -60,8 +63,19 @@ namespace BugTracker.Service
             }
             else if (await _userManager.IsInRoleAsync(user, "Manager"))
             {
-                var team = user.Team;
-                return GetAllBugs().Where(bug => bug.Owner == team);
+                try
+                {
+                    var team = _userManager.Users
+                    .Include(user => user.Team)
+                    .FirstOrDefault(u => u.Id == user.Id)
+                    .Team;
+                    return GetAllBugs().Where(bug => bug.Owner == team);
+                }
+                catch (NullReferenceException)
+                {
+
+                }
+                
             }
             return GetAllBugs().Where(bug => bug.AssignedTo == user);
         }
@@ -78,7 +92,7 @@ namespace BugTracker.Service
             return _context.UserProject;
         }
 
-        public void RemoveUserFromProject(ApplicationUser user, string projectName)
+        public bool RemoveUserFromProject(ApplicationUser user, string projectName)
         {
             var projectsOfUser = _context.UserProject
                 .Where(userProject => userProject.User == user);
@@ -92,7 +106,38 @@ namespace BugTracker.Service
             {
                 _context.Remove(toDelete);
                 _context.SaveChanges();
+                return true;
             }
+            return false;
+        }
+
+        public bool AssignUserToTeam(ApplicationUser user, string teamName)
+        {
+            var newTeam = _context.Team.FirstOrDefault(team => team.Name == teamName);
+            var alreadyAssigned = _context.Users
+                .Where(u => u == user && user.Team == newTeam)
+                .Any();
+
+            if (newTeam != null && !alreadyAssigned)
+            {
+                _context.Update(user);
+                user.Team = newTeam;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public void AddTeam(Team newTeam)
+        {
+            _context.Add(newTeam);
+            _context.SaveChanges();
+        }
+
+        public void DeleteTeam(Team toDelete)
+        {
+            _context.Remove(toDelete);
+            _context.SaveChanges();
         }
     }
 }

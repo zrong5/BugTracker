@@ -5,6 +5,7 @@ using BugTracker.Data;
 using BugTracker.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
 {
@@ -22,6 +23,8 @@ namespace BugTracker.Controllers
             _userManager = userManager;
             _userBug = userBug;
         }
+
+        [Authorize(Policy = "View Bugs")]
         public async Task<IActionResult> IndexAsync()
         {
             var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -45,12 +48,14 @@ namespace BugTracker.Controllers
             };
             return View(model);
         }
-        public IActionResult Detail(int id)
+        [Authorize(Policy = "View Bugs")]
+        public async Task<IActionResult> DetailAsync(int id)
         {
             var bug = _bugs.GetById(id);
             var detail = bug.LogDetail == null ? "" : bug.LogDetail.Detail;
             var createdByFullName = bug.CreatedBy.FirstName + " " + bug.CreatedBy.LastName + " @";
             var closedByFullName = "";
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             if(bug.ClosedBy != null)
             {
                 closedByFullName = bug.ClosedBy.FirstName + " " + bug.ClosedBy.LastName + " @";
@@ -69,12 +74,14 @@ namespace BugTracker.Controllers
                 CreatedBy = createdByFullName + bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
                 ClosedBy = bug.ClosedBy == null ? "" : closedByFullName + bug.ClosedBy.UserName,
-                StatusOptions = _bugs.GetAllStatus(),
+                StatusOptions = _bugs.GetAllStatus().Select(status => status.Name),
+                DeveloperOptions = _userBug.GetAllTeamMembers(currentUser).Select(member => member.UserName),
                 UpdateDetail = new BugUpdateModel()
-            };
+            };  
             return View(model);
         }
         [HttpPost]
+        [Authorize(Policy = "View Bugs")]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateBug(BugDetailModel model, int Id)
         {
