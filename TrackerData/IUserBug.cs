@@ -9,7 +9,8 @@ namespace BugTracker.Data
     public interface IUserBug
     {
         Task<IEnumerable<Bug>> GetAllBugsByUserAsync(ApplicationUser user);
-        IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager);
+        Task<IEnumerable<ApplicationUser>> GetAllTeamMembersAsync(ApplicationUser manager);
+        Task<IEnumerable<Project>> GetAllProjectByUserAsync(ApplicationUser user);
         bool AssignUserToProject(ApplicationUser user, string projectName);
         bool RemoveUserFromProject(ApplicationUser user, string projectName);
         IEnumerable<UserProject> GetAllUserProjects();

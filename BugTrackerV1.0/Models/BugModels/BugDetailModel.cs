@@ -26,7 +26,6 @@ namespace BugTracker.Models.BugModels
     public class BugUpdateModel
     {
         public string NewStatus { get; set; }
-        public int Id { get; set; }
         public string UpdateToLog { get; set; }
         public string AssignedTo { get; set; }
     }

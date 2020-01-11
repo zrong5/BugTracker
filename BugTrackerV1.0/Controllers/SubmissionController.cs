@@ -42,7 +42,7 @@ namespace BugTracker.Controllers
                 options = new SubmissionOptionsModel()
                 {
                     ProjectOptions = _bug.GetAllProjects(),
-                    TeamMemberOptions = _userBug.GetAllTeamMembers(user),
+                    TeamMemberOptions = _userBug.GetAllTeamMembersAsync(user),
                     UrgencyOptions = _bug.GetAllUrgencies()
                 };
             }

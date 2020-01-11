@@ -98,7 +98,7 @@ namespace BugTracker.Service
                 .FirstOrDefault(urgency => urgency.Level == urgencyLevel);
         }
 
-        public void Update(int bugId, string toAppend, string statusName)
+        public void Update(int bugId, string toAppend, string statusName, string assignTo)
         {
             var bug = GetById(bugId);
             var now = DateTime.Now;
@@ -124,7 +124,17 @@ namespace BugTracker.Service
                     _context.Update(bug);
                     bug.LogDetail.Detail = bug.LogDetail.Detail + newMessage;
                 }
-                
+            }
+            if(assignTo != null)
+            {
+                _context.Update(bug);
+                bug.AssignedTo = _context.Users.FirstOrDefault(user => user.UserName == assignTo);
+                if(statusName == "Open")
+                {
+                    bug.Status = GetStatusByName("Assigned");
+                    _context.SaveChanges();
+                    return;
+                }
             }
             // check if update is nessecary
             if (bug.Status != newStatus)

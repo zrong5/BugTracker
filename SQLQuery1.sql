@@ -9,6 +9,7 @@ select * from dbo.Bug;
 select * from dbo.ProcessLog;
 select * from dbo.Project;
 select * from dbo.[Status];
+select * from dbo.UserProject;
 
 select * from dbo.Urgency;
 select * from dbo.UserProject;

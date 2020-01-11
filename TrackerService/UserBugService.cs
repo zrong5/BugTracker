@@ -80,16 +80,36 @@ namespace BugTracker.Service
             return GetAllBugs().Where(bug => bug.AssignedTo == user);
         }
 
-        public IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager)
+        public async Task<IEnumerable<ApplicationUser>> GetAllTeamMembersAsync(ApplicationUser user)
         {
+            if(await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return _userManager.Users
+                    .Include(user => user.Team);
+            }
             return _userManager.Users
                 .Include(user => user.Team)
-                .Where(user => user.Team == manager.Team);
+                .Where(u => u.Team == user.Team);
         }
 
         public IEnumerable<UserProject> GetAllUserProjects()
         {
             return _context.UserProject;
+        }
+
+        public async Task<IEnumerable<Project>> GetAllProjectByUserAsync(ApplicationUser user)
+        {
+            if(await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return _context.Project;
+            }
+            var team = _userManager.Users
+                .Include(u => u.Team)
+                .FirstOrDefault(u => u.Id == user.Id)
+                .Team;
+
+            return _context.Project
+                .Where(proj => proj.Owner == team);
         }
 
         public bool RemoveUserFromProject(ApplicationUser user, string projectName)

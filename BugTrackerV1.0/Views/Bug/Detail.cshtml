@@ -27,7 +27,14 @@
                             <select class="form-control" asp-for="UpdateDetail.AssignedTo">
                                 @foreach (var username in Model.DeveloperOptions)
                                 {
-                                    <option>@username</option>
+                                    if (Model.AssignedTo == username)
+                                    {
+                                        <option selected>@username</option>
+                                    }
+                                    else
+                                    {
+                                        <option>@username</option>
+                                    }
                                 }
                             </select>
                         </div>

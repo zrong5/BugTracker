@@ -75,7 +75,7 @@ namespace BugTracker.Controllers
                 ClosedOn = bug.ClosedOn,
                 ClosedBy = bug.ClosedBy == null ? "" : closedByFullName + bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus().Select(status => status.Name),
-                DeveloperOptions = _userBug.GetAllTeamMembers(currentUser).Select(member => member.UserName),
+                DeveloperOptions = _userBug.GetAllTeamMembersAsync(currentUser).Select(member => member.UserName),
                 UpdateDetail = new BugUpdateModel()
             };  
             return View(model);
@@ -92,7 +92,7 @@ namespace BugTracker.Controllers
                 {
                     trimmedMsg = model.UpdateDetail.UpdateToLog.Trim();
                 }
-                _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus);
+                _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus, model.UpdateDetail.AssignedTo);
             }
             return LocalRedirect("/Bug/Detail/" + Id);
         }

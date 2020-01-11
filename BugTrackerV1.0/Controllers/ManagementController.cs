@@ -128,10 +128,11 @@ namespace BugTracker.Controllers
         }
 
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult ManageProjects()
+        public async Task<IActionResult> ManageProjectsAsync()
         {
             var allProjects = _bug.GetAllProjects();
-            var allUsers = _user.GetAll();
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var allUsers = await _userBug.GetAllTeamMembersAsync(currentUser);
             var userProjects = _userBug.GetAllUserProjects();
 
             // list anyone that is not just a submitter
@@ -149,10 +150,8 @@ namespace BugTracker.Controllers
             var model = new ProjectIndexModel
             {
                 UserProjects = listingModel,
-                Projects = _bug.GetAllProjects().Select(result => result.Name),
-                Users = _user.GetAll()
-                    .Where(user => !((_userManager.IsInRoleAsync(user, "Submitter")).Result))
-                    .Select(result => result.UserName)
+                Projects = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
+                Users = allUsers.Select(user => user.UserName)
             };
             return View(model);
         }
