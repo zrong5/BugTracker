@@ -2,64 +2,75 @@
 @{
     ViewData["Title"] = "Detail";
 }
-@{ 
-    var statusList = Model.StatusOptions.Select(s => s.Name ).ToList();
-    var preSelectedName = Model.StatusOptions.FirstOrDefault(s => s.Name == Model.Status).Name;
-    var statusSelectList = new SelectList(statusList, preSelectedName);
-}
-<form class="submissionForm" asp-controller="Bug" asp-action="UpdateBug" asp-route-id=@Model.Id method="post">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <div class="form-group">
-                <label for="BugTitle">Bug Title</label>
-                <p class="lead">@Model.Title</p>
+
+<div class="row justify-content-center" style="margin-top:15px">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                Ticket Detail
             </div>
-            <div class="form-group">
-                <label for="BugTitle">Assigned To</label>
-                <p class="lead">@Model.Team</p>
-            </div>
-            <div class="form-group">
-                <label for="BugTitle">Created On</label>
-                <p class="lead">@Model.CreatedOn</p>
-            </div>
-            <div class="form-group">
-                <label for="BugTitle">Created By</label>
-                <p class="lead">@Model.CreatedBy</p>
-            </div>
-            @if (string.IsNullOrWhiteSpace(Model.ClosedBy) && Model.ClosedOn != null)
-            {
+            <form class="submissionForm" asp-controller="Bug" asp-action="UpdateBug" asp-route-id=@Model.Id method="post" style="padding:15px">
                 <div class="form-group">
-                    <label for="BugTitle">Closed On</label>
-                    <p class="lead">@Model.ClosedOn</p>
+                    <label for="Title">Ticket Title</label>
+                    <p class="lead">@Model.Title</p>
                 </div>
                 <div class="form-group">
-                    <label for="BugTitle">Closed By</label>
-                    <p class="lead">@Model.ClosedBy</p>
+                    <label for="">Assigned To</label>
+                    <p class="lead">@Model.Team</p>
                 </div>
-            }
-            <div class="form-group">
-                <label for="Description">Description</label>
-                <p class="lead">@Model.Description</p>
-            </div>
-            <div class="form-group">
-                <label for="Urgency">Urgency</label>
-                <p class="lead">@Model.Urgency</p>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdateDetail.NewStatus"></label>
-                <select asp-for="UpdateDetail.NewStatus" asp-items="statusSelectList" class="form-control"></select>
-            </div>
-            <div class="form-group">
                 <div class="form-group">
-                    <label for="ProgressLog">Progress Log</label>
-                    <p style="white-space:pre-line">@Html.Raw(Model.ProgressLog.Replace("\n", "<br />"))</p>
-                    <textarea asp-for="UpdateDetail.UpdateToLog" class="form-control" rows="3"></textarea>
+                    <label for="BugTitle">Created On</label>
+                    <p class="lead">@Model.CreatedOn</p>
                 </div>
-            </div>
-            <button type="submit" class="btn btn-dark">Save Changes</button>
+                <div class="form-group">
+                    <label for="BugTitle">Created By</label>
+                    <p class="lead">@Model.CreatedBy</p>
+                </div>
+                @if (string.IsNullOrWhiteSpace(Model.ClosedBy) && Model.ClosedOn != null)
+                {
+                    <div class="form-group">
+                        <label for="BugTitle">Closed On</label>
+                        <p class="lead">@Model.ClosedOn</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="BugTitle">Closed By</label>
+                        <p class="lead">@Model.ClosedBy</p>
+                    </div>
+                }
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <p class="lead">@Model.Description</p>
+                </div>
+                <div class="form-group">
+                    <label for="Urgency">Urgency</label>
+                    <p class="lead">@Model.Urgency</p>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UpdateDetail.NewStatus">Status</label>
+                    <select asp-for="UpdateDetail.NewStatus" class="form-control">
+                        @foreach (var status in Model.StatusOptions)
+                        {
+                            if (status.Name == Model.Status)
+                            {
+                                <option selected>@status.Name</option>
+                            }
+                            else
+                            {
+                                <option>@status.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="ProgressLog">Progress Log</label>
+                        <p style="white-space:pre-line">@Html.Raw(Model.ProgressLog.Replace("\n", "<br />"))</p>
+                        <textarea asp-for="UpdateDetail.UpdateToLog" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-info">Update</button>
+            </form>
         </div>
     </div>
-</form>
-
-
+</div>
 

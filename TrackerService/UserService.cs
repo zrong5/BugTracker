@@ -40,21 +40,32 @@ namespace BugTracker.Service
             // concatenate all role names assign to user 
             var currentRoles = await _userManager.GetRolesAsync(user);
             var concatRoles = "";
-            foreach (var role in currentRoles)
+            if (currentRoles.Any())
             {
-                concatRoles += role + ", ";
+                foreach (var role in currentRoles)
+                {
+                    concatRoles += role + ", ";
+                }
+                // remove empty spaces and erase last ',' character
+                concatRoles = concatRoles.Trim();
+                concatRoles = concatRoles[0..^1];
             }
-            // remove empty spaces and erase last ',' character
-            concatRoles = concatRoles.Trim();
-            concatRoles = concatRoles[0..^1];
             return concatRoles;
         }
 
         public string GetTeamName(ApplicationUser user)
         {
-            return _userManager.Users
-                .Include(user => user.Team)
-                .FirstOrDefault(u => u == user).Team.Name;
+            try
+            {
+                return _userManager.Users
+                    .Include(user => user.Team)
+                    .FirstOrDefault(u => u.Id == user.Id)
+                    .Team.Name;
+            }
+            catch (NullReferenceException)
+            {
+                return "";
+            }
         }
 
         public async Task<bool> IsUserUniqueAsync(ApplicationUser user)

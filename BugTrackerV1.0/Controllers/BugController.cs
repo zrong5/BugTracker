@@ -35,7 +35,8 @@ namespace BugTracker.Controllers
                     Status = result.Status.Name,
                     Team = result.Owner.Name,
                     CreatedOn = result.CreatedOn,
-                    AssignedTo = result.AssignedTo.FirstName + " " 
+                    AssignedTo = result.AssignedTo == null ? "" : 
+                    result.AssignedTo.FirstName + " " 
                         + result.AssignedTo.LastName
                 });
             var model = new BugIndexModel()

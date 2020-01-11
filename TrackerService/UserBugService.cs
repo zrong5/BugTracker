@@ -39,18 +39,31 @@ namespace BugTracker.Service
             }
         }
 
+        protected IEnumerable<Bug> GetAllBugs()
+        {
+            return _context.Bug
+                    .Include(bug => bug.Status)
+                    .Include(bug => bug.ProjectAffected)
+                    .Include(bug => bug.Owner)
+                    .Include(bug => bug.LogDetail)
+                    .Include(bug => bug.Urgency)
+                    .Include(bug => bug.CreatedBy)
+                    .Include(bug => bug.ClosedBy)
+                    .Include(bug => bug.AssignedTo);
+        }
+
         public async Task<IEnumerable<Bug>> GetAllBugsByUserAsync(ApplicationUser user)
         {
             if(await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return _context.Bug;
+                return GetAllBugs();
             }
             else if (await _userManager.IsInRoleAsync(user, "Manager"))
             {
                 var team = user.Team;
-                return _context.Bug.Where(bug => bug.Owner == team);
+                return GetAllBugs().Where(bug => bug.Owner == team);
             }
-            return _context.Bug.Where(bug => bug.AssignedTo == user);
+            return GetAllBugs().Where(bug => bug.AssignedTo == user);
         }
 
         public IEnumerable<ApplicationUser> GetAllTeamMembers(ApplicationUser manager)
