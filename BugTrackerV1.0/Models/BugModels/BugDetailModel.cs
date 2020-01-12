@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BugTracker.Data;
 
 namespace BugTracker.Models.BugModels
 {
@@ -21,6 +20,7 @@ namespace BugTracker.Models.BugModels
         public DateTime? ClosedOn { get; set; }
         public IEnumerable<string> StatusOptions { get; set; }
         public IEnumerable<string> DeveloperOptions{ get; set; }
+        public IEnumerable<string> ProjectOptions { get; set; }
         public BugUpdateModel UpdateDetail { get; set; }
     }
     public class BugUpdateModel
@@ -28,5 +28,6 @@ namespace BugTracker.Models.BugModels
         public string NewStatus { get; set; }
         public string UpdateToLog { get; set; }
         public string AssignedTo { get; set; }
+        public string Project { get; set; }
     }
 }

@@ -19,7 +19,7 @@
                         <input type="text" class="form-control" placeholder="Bug Title.." asp-for="Title">
                     </div>
                 }
-                @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Submitter Permission")).Succeeded)
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Manager"))
                 {
                     <div class="form-group">
                         <label asp-for="ProjectAffected">Project</label>
@@ -74,8 +74,8 @@
                         <label asp-for="Description">Description</label>
                         <textarea class="form-control" id="bugDescription" rows="3" asp-for="Description"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-info">Submit</button>
                 }
+                <button type="submit" class="btn btn-info">Submit</button>
             </form>
         </div>
     </div>

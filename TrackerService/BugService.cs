@@ -76,6 +76,7 @@ namespace BugTracker.Service
 
         public Project GetProjectByName(string projectName)
         {
+            if (projectName == null) return null;
             return GetAllProjects()
                 .FirstOrDefault(proj => proj.Name == projectName);
         }
@@ -98,7 +99,7 @@ namespace BugTracker.Service
                 .FirstOrDefault(urgency => urgency.Level == urgencyLevel);
         }
 
-        public void Update(int bugId, string toAppend, string statusName, string assignTo)
+        public void Update(int bugId, string toAppend, string statusName, string assignTo, string project)
         {
             var bug = GetById(bugId);
             var now = DateTime.Now;
@@ -125,6 +126,11 @@ namespace BugTracker.Service
                     bug.LogDetail.Detail = bug.LogDetail.Detail + newMessage;
                 }
             }
+            if(project != null)
+            {
+                _context.Update(bug);
+                bug.ProjectAffected = GetProjectByName(project);
+            }
             if(assignTo != null)
             {
                 _context.Update(bug);
@@ -137,7 +143,7 @@ namespace BugTracker.Service
                 }
             }
             // check if update is nessecary
-            if (bug.Status != newStatus)
+            if (newStatus != null && bug.Status != newStatus)
             {
                 _context.Update(bug);
                 bug.Status = newStatus;

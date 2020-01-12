@@ -65,7 +65,7 @@ namespace BugTracker.Controllers
                 Id = id,
                 Title = bug.Title,
                 ProgressLog = detail,
-                Project = bug.ProjectAffected.Name,
+                Project = bug.ProjectAffected?.Name,
                 Status = bug.Status.Name,
                 Team = bug.Owner.Name,
                 Description = bug.Description,
@@ -73,9 +73,10 @@ namespace BugTracker.Controllers
                 CreatedOn = bug.CreatedOn,
                 CreatedBy = createdByFullName + bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
-                ClosedBy = bug.ClosedBy == null ? "" : closedByFullName + bug.ClosedBy.UserName,
+                ClosedBy = bug.ClosedBy == null ? null : closedByFullName + bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus().Select(status => status.Name),
                 DeveloperOptions = (await _userBug.GetAllTeamMembersAsync(currentUser)).Select(member => member.UserName),
+                ProjectOptions = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
                 UpdateDetail = new BugUpdateModel()
             };  
             return View(model);
@@ -92,7 +93,7 @@ namespace BugTracker.Controllers
                 {
                     trimmedMsg = model.UpdateDetail.UpdateToLog.Trim();
                 }
-                _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus, model.UpdateDetail.AssignedTo);
+                _bugs.Update(Id, trimmedMsg, model.UpdateDetail.NewStatus, model.UpdateDetail.AssignedTo, model.UpdateDetail.Project);
             }
             return LocalRedirect("/Bug/Detail/" + Id);
         }

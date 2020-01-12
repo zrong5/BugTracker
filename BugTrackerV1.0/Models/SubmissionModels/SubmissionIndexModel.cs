@@ -15,7 +15,6 @@ namespace BugTracker.Models.SubmissionModels
         public string Urgency { get; set; }
         public string Team { get; set; }
         public string TeamMember { get; set; }
-        [Required]
         public string ProjectAffected { get; set; }
         public SubmissionOptionsModel Options { get; set; }
     }
