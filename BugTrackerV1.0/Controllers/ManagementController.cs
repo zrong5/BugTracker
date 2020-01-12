@@ -195,15 +195,18 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult AddProject(string projectName)
+        public IActionResult AddProject(ProjectIndexModel model)
         {
             if (ModelState.IsValid)
             {
+                var createModel = model.CreateModel;
                 var newProject = new Project
                 {
-                    //Name = 
+                    Name = createModel.ProjectName,
+                    Owner = _bug.GetTeamByName(createModel.Team),
+                    Description = createModel.Description
                 };
-                //_userBug.AddProject()
+                _userBug.AddProject(newProject);
             }
             return RedirectToAction("ManageProjects", "Management");
         }
@@ -215,7 +218,8 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                var project = _bug.GetProjectByName(projectName);
+                _userBug.DeleteProject(project);
             }
             return RedirectToAction("ManageProjects", "Management");
         }

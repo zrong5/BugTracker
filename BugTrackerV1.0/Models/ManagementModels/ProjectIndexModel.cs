@@ -5,6 +5,7 @@ namespace BugTracker.Models.ManagementModels
     public class ProjectIndexModel
     {
         public ProjectAssignmentUpdateModel UpdateModel { get; set; }
+        public ProjectCreateModel CreateModel { get; set; }
         public IEnumerable<ProjectListingModel> UserProjects { get; set; }
         public IEnumerable<string> Users { get; set; }
         public IEnumerable<string> Projects { get; set; }
@@ -19,5 +20,6 @@ namespace BugTracker.Models.ManagementModels
     {
         public string ProjectName { get; set; }
         public string Team { get; set; }
+        public string Description { get; set; }
     }
 }
