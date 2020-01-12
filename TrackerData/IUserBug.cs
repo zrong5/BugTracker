@@ -9,11 +9,15 @@ namespace BugTracker.Data
         Task<IEnumerable<Bug>> GetAllBugsByUserAsync(ApplicationUser user);
         Task<IEnumerable<ApplicationUser>> GetAllTeamMembersAsync(ApplicationUser manager);
         Task<IEnumerable<Project>> GetAllProjectByUserAsync(ApplicationUser user);
+        Task<IEnumerable<UserProject>> GetGetAllUserProjectsByUserAsync(ApplicationUser user);
+        Task<IEnumerable<Team>> GetAllTeamsByUser(ApplicationUser user);
         bool AssignUserToProject(ApplicationUser user, string projectName);
         bool RemoveUserFromProject(ApplicationUser user, string projectName);
         IEnumerable<UserProject> GetAllUserProjects();
         bool AssignUserToTeam(ApplicationUser user, string teamName);
         void AddTeam(Team newTeam);
         void DeleteTeam(Team toDelete);
+        void AddProject(Project newProject);
+        void DeleteProject(Project toDelete);
     }
 }

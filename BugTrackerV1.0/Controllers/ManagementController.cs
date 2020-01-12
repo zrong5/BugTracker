@@ -133,8 +133,8 @@ namespace BugTracker.Controllers
             var allProjects = _bug.GetAllProjects();
             var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             var allUsers = await _userBug.GetAllTeamMembersAsync(currentUser);
-            var userProjects = _userBug.GetAllUserProjects();
-
+            var userProjects = await _userBug.GetGetAllUserProjectsByUserAsync(currentUser);
+            var allTeams = await _userBug.GetAllTeamsByUser(currentUser);
             // list anyone that is not just a submitter
             var listingModel = userProjects
                 .Select(result => new ProjectListingModel
@@ -150,7 +150,8 @@ namespace BugTracker.Controllers
             {
                 UserProjects = listingModel,
                 Projects = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
-                Users = allUsers.Select(user => user.UserName)
+                Users = allUsers.Select(user => user.UserName),
+                Teams = allTeams.Select(team => team.Name)
             };
             return View(model);
         }
@@ -188,6 +189,34 @@ namespace BugTracker.Controllers
         {
             var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
             _userBug.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
+            return RedirectToAction("ManageProjects", "Management");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Manage Projects")]
+        public IActionResult AddProject(string projectName)
+        {
+            if (ModelState.IsValid)
+            {
+                var newProject = new Project
+                {
+                    //Name = 
+                };
+                //_userBug.AddProject()
+            }
+            return RedirectToAction("ManageProjects", "Management");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Manage Projects")]
+        public IActionResult DeleteProject(string projectName)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
             return RedirectToAction("ManageProjects", "Management");
         }
 

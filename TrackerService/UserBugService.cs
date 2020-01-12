@@ -55,6 +55,14 @@ namespace BugTracker.Service
                     .Include(bug => bug.AssignedTo);
         }
 
+        protected Team GetTeam(ApplicationUser user)
+        {
+            return _userManager.Users
+                    .Include(user => user.Team)
+                    .FirstOrDefault(u => u.Id == user.Id)
+                    .Team;
+        }
+
         public async Task<IEnumerable<Bug>> GetAllBugsByUserAsync(ApplicationUser user)
         {
             if(await _userManager.IsInRoleAsync(user, "Admin"))
@@ -65,10 +73,7 @@ namespace BugTracker.Service
             {
                 try
                 {
-                    var team = _userManager.Users
-                    .Include(user => user.Team)
-                    .FirstOrDefault(u => u.Id == user.Id)
-                    .Team;
+                    var team = GetTeam(user);
                     return GetAllBugs().Where(bug => bug.Owner == team);
                 }
                 catch (NullReferenceException)
@@ -87,10 +92,7 @@ namespace BugTracker.Service
                 return _userManager.Users
                     .Include(user => user.Team);
             }
-            var team = _userManager.Users
-                    .Include(user => user.Team)
-                    .FirstOrDefault(u => u.Id == user.Id)
-                    .Team;
+            var team = GetTeam(user);
 
             return _userManager.Users
                 .Include(user => user.Team)
@@ -110,10 +112,7 @@ namespace BugTracker.Service
             {
                 return _context.Project;
             }
-            var team = _userManager.Users
-                .Include(u => u.Team)
-                .FirstOrDefault(u => u.Id == user.Id)
-                .Team;
+            var team = GetTeam(user);
 
             return _context.Project
                 .Where(proj => proj.Owner == team);
@@ -162,6 +161,45 @@ namespace BugTracker.Service
         }
 
         public void DeleteTeam(Team toDelete)
+        {
+            _context.Remove(toDelete);
+            _context.SaveChanges();
+        }
+        public async Task<IEnumerable<Team>> GetAllTeamsByUser(ApplicationUser user)
+        {
+            if(await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return _context.Team;
+            }
+           return new[] { GetTeam(user) };
+        }
+
+        public async Task<IEnumerable<UserProject>> GetGetAllUserProjectsByUserAsync(ApplicationUser user)
+        {
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return GetAllUserProjects();
+            }
+            else if (await _userManager.IsInRoleAsync(user, "Manager"))
+            {
+                var team = GetTeam(user);
+                var projectsByTeam = _context.Project
+                    .Include(proj => proj.Owner)
+                    .Where(proj => proj.Owner == team);
+
+                return GetAllUserProjects()
+                    .Where(userProj => projectsByTeam.Contains(userProj.Project));
+            }
+            return GetAllUserProjects().Where(userProj => userProj.User == user);
+        }
+
+        public void AddProject(Project newProject)
+        {
+            _context.Add(newProject);
+            _context.SaveChanges();
+        }
+
+        public void DeleteProject(Project toDelete)
         {
             _context.Remove(toDelete);
             _context.SaveChanges();
