@@ -34,9 +34,9 @@ namespace BugTracker.Controllers
                 {
                     Id = result.Id,
                     Title = result.Title,
-                    Urgency = result.Urgency.Level,
-                    Status = result.Status.Name,
-                    Team = result.Owner.Name,
+                    Urgency = result.Urgency?.Level,
+                    Status = result.Status?.Name,
+                    Team = result.Owner?.Name,
                     CreatedOn = result.CreatedOn,
                     AssignedTo = result.AssignedTo == null ? "" : 
                     result.AssignedTo.FirstName + " " 
@@ -66,10 +66,10 @@ namespace BugTracker.Controllers
                 Title = bug.Title,
                 ProgressLog = detail,
                 Project = bug.ProjectAffected?.Name,
-                Status = bug.Status.Name,
-                Team = bug.Owner.Name,
+                Status = bug.Status?.Name,
+                Team = bug.Owner?.Name,
                 Description = bug.Description,
-                Urgency = bug.Urgency.Level,
+                Urgency = bug.Urgency?  .Level,
                 CreatedOn = bug.CreatedOn,
                 CreatedBy = createdByFullName + bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
