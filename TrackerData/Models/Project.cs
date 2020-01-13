@@ -12,7 +12,6 @@ namespace BugTracker.Data
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        [Required]
         public Team Owner { get; set; }
     }
 }

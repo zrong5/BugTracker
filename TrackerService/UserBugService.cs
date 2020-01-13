@@ -19,25 +19,24 @@ namespace BugTracker.Service
             _context = context;
             _userManager = userManager;
         }
-        public bool AssignUserToProject(ApplicationUser user, string projectName)
+        public bool AssignUserToProject(ApplicationUser user, Project project)
         {
-            var project = _context.Project
-                .FirstOrDefault(project => project.Name == projectName);
-            var userProject = new UserProject
+            if (project != null && user != null)
             {
-                User = user,
-                Project = project
-            };
-
-            var alreadyAssigned = _context.UserProject
+                var alreadyAssigned = _context.UserProject
                 .Where(userProj => userProj.User == user && userProj.Project == project)
                 .Any();
-
-            if (project != null && !alreadyAssigned)
-            {
-                _context.Add(userProject);
-                _context.SaveChanges();
-                return true;
+                if (!alreadyAssigned)
+                {
+                    var userProject = new UserProject
+                    {
+                        User = user,
+                        Project = project
+                    };
+                    _context.Add(userProject);
+                    _context.SaveChanges();
+                    return true;
+                }
             }
             return false;
         }
@@ -89,17 +88,15 @@ namespace BugTracker.Service
         {
             if(await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return _userManager.Users
-                    .Include(user => user.Team);
+                return await _userManager.GetUsersInRoleAsync("Manager");
             }
             var team = GetTeam(user);
-
             return _userManager.Users
                 .Include(user => user.Team)
                 .Where(u => u.Team == team);
         }
 
-        public IEnumerable<UserProject> GetAllUserProjects()
+         public IEnumerable<UserProject> GetAllUserProjects()
         {
             return _context.UserProject
                 .Include(up => up.Project)
@@ -110,27 +107,26 @@ namespace BugTracker.Service
         {
             if(await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return _context.Project;
+                return _context.Project.Include(proj => proj.Owner);
             }
+
             var team = GetTeam(user);
 
             return _context.Project
+                .Include(proj => proj.Owner)
                 .Where(proj => proj.Owner == team);
         }
 
-        public bool RemoveUserFromProject(ApplicationUser user, string projectName)
+        public bool RemoveUserFromProject(ApplicationUser user, Project project)
         {
-            var projectsOfUser = _context.UserProject
-                .Where(userProject => userProject.User == user);
-            var project = _context.Project
-                .FirstOrDefault(project => project.Name == projectName);
+            
 
-            var toDelete = projectsOfUser
-                .FirstOrDefault(userProject => userProject.Project.Name == projectName);
-
-            if (toDelete != null)
+            if (project != null && user != null)
             {
-                _context.Remove(toDelete);
+                var userProject = _context.UserProject
+                .FirstOrDefault(userProject => userProject.User == user
+                                && userProject.Project == project);
+                _context.Remove(userProject);
                 _context.SaveChanges();
                 return true;
             }
@@ -152,6 +148,12 @@ namespace BugTracker.Service
                 return true;
             }
             return false;
+        }
+        
+        public async Task<ApplicationUser> GetManagerAsync(Team team)
+        {
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            return managers.FirstOrDefault(user => user.Team == team);
         }
 
         public void AddTeam(Team newTeam)
@@ -203,6 +205,36 @@ namespace BugTracker.Service
         {
             _context.Remove(toDelete);
             _context.SaveChanges();
+        }
+
+        public bool AssignTeamToProject(Team team, Project project)
+        {
+            if(team != null && project != null)
+            {
+                if(project.Owner == null)
+                {
+                    _context.Update(project);
+                    project.Owner = team;
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool RemoveTeamFromProject(Team team, Project project)
+        {
+            if (team != null && project != null)
+            {
+                if(project.Owner == team)
+                {
+                    _context.Update(project);
+                    project.Owner = null;
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -135,20 +135,27 @@ namespace BugTracker.Controllers
             var allUsers = await _userBug.GetAllTeamMembersAsync(currentUser);
             var userProjects = await _userBug.GetGetAllUserProjectsByUserAsync(currentUser);
             var allTeams = await _userBug.GetAllTeamsByUser(currentUser);
-            // list anyone that is not just a submitter
-            var listingModel = userProjects
-                .Select(result => new ProjectListingModel
+            var assignedListingModel = userProjects
+                .Select(result => new AssignedProjectListingModel
                 {
                     FullName = result.User.FirstName + " " + result.User.LastName,
                     Username = result.User.UserName,
                     EmailAddress = result.User.Email,
                     Project = result.Project.Name
                 });
-
+            var listingModel = allProjects
+                .Select(result => new ProjectListingModel
+                {
+                    Manager = (_userBug.GetManagerAsync(result.Owner).Result).FirstName +
+                    (_userBug.GetManagerAsync(result.Owner).Result).LastName,
+                    Team = result.Owner.Name,
+                    Email = (_userBug.GetManagerAsync(result.Owner).Result).Email
+                });
             // list anyone that is not just a submitter
             var model = new ProjectIndexModel
             {
-                UserProjects = listingModel,
+                UserProjects = assignedListingModel,
+                TeamProjects = listingModel,
                 Projects = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
                 Users = allUsers.Select(user => user.UserName),
                 Teams = allTeams.Select(team => team.Name)
@@ -159,36 +166,54 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult ManageProjects(ProjectIndexModel model, string option)
+        public async Task<IActionResult> ManageProjectsAsync(ProjectIndexModel model, string option)
         {
             // redirect to differect actions depending on which button is pressed
             if (ModelState.IsValid)
             {
                 if(option == "Assign")
                 {
-                    return AssignUserToProject(model);
+                    return await AssignEntityToProjectAsync(model);
                 }
                 else
                 {
-                    return RemoveUserFromProject(model);
+                    return await RemoveEntityFromProjectAsync(model);
                 }
             }
             return RedirectToAction("ManageProjects", "Management");
         }
 
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult AssignUserToProject(ProjectIndexModel model)
+        public async Task<IActionResult> AssignEntityToProjectAsync(ProjectIndexModel model)
         {
-            var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
-            _userBug.AssignUserToProject(user, model.UpdateModel.ProjectName);
+            var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
+            if (User.IsInRole("Manager"))
+            {
+                var user = await _userManager.FindByNameAsync(model.UpdateModel.Username);
+                _userBug.AssignUserToProject(user, project);
+            }
+            else
+            {
+                var team = _bug.GetTeamByName(model.UpdateModel.Team);
+                _userBug.AssignTeamToProject(team, project);
+            }
             return RedirectToAction("ManageProjects", "Management");
         }
 
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult RemoveUserFromProject(ProjectIndexModel model)
+        public async Task<IActionResult> RemoveEntityFromProjectAsync(ProjectIndexModel model)
         {
-            var user = (_userManager.FindByNameAsync(model.UpdateModel.Username)).Result;
-            _userBug.RemoveUserFromProject(user, model.UpdateModel.ProjectName);
+            var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
+            if (User.IsInRole("Manager"))
+            {
+                var user = await _userManager.FindByNameAsync(model.UpdateModel.Username);
+                _userBug.RemoveUserFromProject(user, project);
+            }
+            else
+            {
+                var team = _bug.GetTeamByName(model.UpdateModel.Team);
+                _userBug.RemoveTeamFromProject(team, project);
+            }
             return RedirectToAction("ManageProjects", "Management");
         }
 
@@ -203,7 +228,6 @@ namespace BugTracker.Controllers
                 var newProject = new Project
                 {
                     Name = createModel.ProjectName,
-                    Owner = _bug.GetTeamByName(createModel.Team),
                     Description = createModel.Description
                 };
                 _userBug.AddProject(newProject);
