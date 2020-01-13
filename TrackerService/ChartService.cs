@@ -21,17 +21,28 @@ namespace BugTracker.Service
             _userManager = userManager;
             _context = context;
         }
-
-        private async Task<IEnumerable<Bug>> AllBugsByUserAsync(ApplicationUser user)
+        protected Team GetTeam(ApplicationUser user)
         {
-            var allBugs = _context.Bug
+            return _userManager.Users
+                    .Include(user => user.Team)
+                    .FirstOrDefault(u => u.Id == user.Id)
+                    .Team;
+        }
+        protected IEnumerable<Bug> GetAllBugs()
+        {
+            return _context.Bug
                 .Include(bug => bug.Status)
                 .Include(bug => bug.ProjectAffected)
                 .Include(bug => bug.Owner)
                 .Include(bug => bug.LogDetail)
                 .Include(bug => bug.Urgency)
+                .Include(bug => bug.AssignedTo)
                 .Include(bug => bug.CreatedBy)
                 .Include(bug => bug.ClosedBy);
+        }
+        private async Task<IEnumerable<Bug>> AllBugsByUserAsync(ApplicationUser user)
+        {
+            var allBugs = GetAllBugs();
 
             if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
@@ -39,8 +50,8 @@ namespace BugTracker.Service
             }
             else if(await _userManager.IsInRoleAsync(user, "Manager"))
             {
-                var team = user.Team;
-                return allBugs.Where(bug => bug.AssignedTo.Team == team);
+                var team = GetTeam(user);
+                return allBugs.Where(bug => bug.Owner == team);
             }
             return allBugs.Where(bug => bug.AssignedTo == user);
         }  

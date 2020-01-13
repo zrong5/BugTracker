@@ -27,7 +27,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             SubmissionOptionsModel options = null;
-            var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (User.IsInRole("Admin"))
             {
                 options = new SubmissionOptionsModel()
@@ -41,7 +41,7 @@ namespace BugTracker.Controllers
             {
                 options = new SubmissionOptionsModel()
                 {
-                    ProjectOptions = _bug.GetAllProjects(),
+                    ProjectOptions = await _userBug.GetAllProjectByUserAsync(user),
                     TeamMemberOptions = await _userBug.GetAllTeamMembersAsync(user),
                     UrgencyOptions = _bug.GetAllUrgencies()
                 };
