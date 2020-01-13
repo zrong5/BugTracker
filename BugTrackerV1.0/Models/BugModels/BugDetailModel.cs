@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Data.Models;
+using System;
 using System.Collections.Generic;
 
 namespace BugTracker.Models.BugModels
@@ -21,6 +22,7 @@ namespace BugTracker.Models.BugModels
         public IEnumerable<string> StatusOptions { get; set; }
         public IEnumerable<string> DeveloperOptions{ get; set; }
         public IEnumerable<string> ProjectOptions { get; set; }
+        public IEnumerable<UserProjectModel> UserProjectOptions { get; set; }
         public BugUpdateModel UpdateDetail { get; set; }
     }
     public class BugUpdateModel
@@ -28,6 +30,11 @@ namespace BugTracker.Models.BugModels
         public string NewStatus { get; set; }
         public string UpdateToLog { get; set; }
         public string AssignedTo { get; set; }
+        public string Project { get; set; }
+    }
+    public class UserProjectModel
+    {
+        public string Username { get; set; }
         public string Project { get; set; }
     }
 }

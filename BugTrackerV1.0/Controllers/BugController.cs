@@ -27,8 +27,8 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "View Bugs")]
         public async Task<IActionResult> IndexAsync()
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            var bugModels = await _userBug.GetAllBugsByUserAsync(currentUser);
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
+            var bugModels = await _userBug.GetAllBugsByUserAsync(currentUser).ConfigureAwait(false);
             var listingModel = bugModels
                 .Select(result => new BugListingModel
                 {
@@ -55,7 +55,7 @@ namespace BugTracker.Controllers
             var detail = bug.LogDetail == null ? "" : bug.LogDetail.Detail;
             var createdByFullName = bug.CreatedBy.FirstName + " " + bug.CreatedBy.LastName + " @";
             var closedByFullName = "";
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
             if(bug.ClosedBy != null)
             {
                 closedByFullName = bug.ClosedBy.FirstName + " " + bug.ClosedBy.LastName + " @";
@@ -69,14 +69,22 @@ namespace BugTracker.Controllers
                 Status = bug.Status?.Name,
                 Team = bug.Owner?.Name,
                 Description = bug.Description,
-                Urgency = bug.Urgency?  .Level,
+                Urgency = bug.Urgency?.Level,
                 CreatedOn = bug.CreatedOn,
                 CreatedBy = createdByFullName + bug.CreatedBy.UserName,
                 ClosedOn = bug.ClosedOn,
                 ClosedBy = bug.ClosedBy == null ? null : closedByFullName + bug.ClosedBy.UserName,
                 StatusOptions = _bugs.GetAllStatus().Select(status => status.Name),
-                DeveloperOptions = (await _userBug.GetAllTeamMembersAsync(currentUser)).Select(member => member.UserName),
-                ProjectOptions = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
+                DeveloperOptions = (await _userBug.GetAllTeamMembersAsync(currentUser).ConfigureAwait(false))
+                                    .Select(u => u.UserName),
+                ProjectOptions = (await _userBug.GetAllProjectByUserAsync(currentUser).ConfigureAwait(false))
+                                    .Select(proj => proj.Name),
+                UserProjectOptions = _userBug.GetAllUserProjects().Select(result => new UserProjectModel
+                {
+                    Username = result.User.UserName,
+                    Project = result.Project.Name
+                }),
+
                 UpdateDetail = new BugUpdateModel()
             };  
             return View(model);
@@ -86,7 +94,7 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateBug(BugDetailModel model, int Id)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 string trimmedMsg = "";
                 if (model.UpdateDetail.UpdateToLog != null)

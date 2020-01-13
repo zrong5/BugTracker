@@ -9,6 +9,7 @@ using System;
 using BugTracker.Data;
 using BugTracker.Data.Models;
 using BugTracker.Service;
+using Newtonsoft.Json;
 
 namespace BugTracker
 {
@@ -67,7 +68,11 @@ namespace BugTracker
                 options.Cookie.Name = "Identity.Cookie";
                 options.LoginPath = "/Home/Login";
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

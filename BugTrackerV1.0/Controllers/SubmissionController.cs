@@ -27,7 +27,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             SubmissionOptionsModel options = null;
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
             if (User.IsInRole("Admin"))
             {
                 options = new SubmissionOptionsModel()
@@ -41,8 +41,8 @@ namespace BugTracker.Controllers
             {
                 options = new SubmissionOptionsModel()
                 {
-                    ProjectOptions = await _userBug.GetAllProjectByUserAsync(user),
-                    TeamMemberOptions = await _userBug.GetAllTeamMembersAsync(user),
+                    ProjectOptions = await _userBug.GetAllProjectByUserAsync(user).ConfigureAwait(false),
+                    TeamMemberOptions = await _userBug.GetAllTeamMembersAsync(user).ConfigureAwait(false),
                     UrgencyOptions = _bug.GetAllUrgencies()
                 };
             }
@@ -59,16 +59,17 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> Submit(SubmissionIndexModel model)
         {
             int redirectId = 0;
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
-                var currentUser = await _userManager.GetUserAsync(User);
+                var currentUser = await _userManager.GetUserAsync(User).ConfigureAwait(false);
                 var now = DateTime.Now;
                 var newBug = new Bug()
                 {
                     Urgency = _bug.GetUrgencyByName(model.Urgency),
                     Title = model.Title,
                     Owner = _bug.GetTeamByName(model.Team),
-                    AssignedTo = model.TeamMember == null ? null : await _userManager.FindByNameAsync(model.TeamMember),
+                    AssignedTo = model.TeamMember == null ? null : 
+                            await _userManager.FindByNameAsync(model.TeamMember).ConfigureAwait(false),
                     CreatedOn = now,
                     Description = model.Description,
                     LogDetail = _bug.CreateEmptyLog(),
