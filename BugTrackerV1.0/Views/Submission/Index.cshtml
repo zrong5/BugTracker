@@ -1,5 +1,12 @@
 ﻿@model BugTracker.Models.SubmissionModels.SubmissionIndexModel
 @using Microsoft.AspNetCore.Authorization
+@{
+    <text>
+        <script>
+            var data = '@Html.Raw(Json.Serialize(Model))';
+        </script>
+    </text>
+}
 @inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "Index";
@@ -23,12 +30,16 @@
                 {
                     <div class="form-group">
                         <label asp-for="ProjectAffected">Project</label>
-                        <select class="form-control" asp-for="ProjectAffected">
+                        <select class="form-control" asp-for="ProjectAffected" id="projectSlt">
                             @foreach (var project in Model.Options.ProjectOptions)
                             {
-                                <option>@project.Name</option>
+                                <option>@project</option>
                             }
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Developer">Assign To</label>
+                        <select class="form-control" asp-for="Developer" id="developerSlt"></select>
                     </div>
                 }
                 @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Developer Permission")).Succeeded)
@@ -38,7 +49,7 @@
                         <select class="form-control" asp-for="Urgency">
                             @foreach (var urgency in Model.Options.UrgencyOptions)
                             {
-                                <option>@urgency.Level</option>
+                                <option>@urgency</option>
                             }
 
                         </select>
@@ -51,23 +62,12 @@
                         <select class="form-control" asp-for="Team">
                             @foreach (var team in Model.Options.TeamOptions)
                             {
-                                <option>@team.Name</option>
+                                <option>@team</option>
                             }
                         </select>
                     </div>
                 }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Manager"))
-                {
-                    <div class="form-group">
-                        <label asp-for="TeamMember">Assign To Team Member</label>
-                        <select class="form-control" asp-for="TeamMember">
-                            @foreach (var teamMember in Model.Options.TeamMemberOptions)
-                            {
-                                <option>@teamMember.UserName</option>
-                            }
-                        </select>
-                    </div>
-                }
+
                 @if (User.Identity.IsAuthenticated && (await AuthorizationService.AuthorizeAsync(User, "Submitter Permission")).Succeeded)
                 {
                     <div class="form-group">
@@ -80,3 +80,19 @@
         </div>
     </div>
 </div>
+<script>
+    (function () {
+        var selectProject = document.getElementById("projectSlt");
+        var selectDeveloper = document.getElementById("developerSlt");
+        selectProject.onchange = function () {
+            var dataAsObj = JSON.parse(data);
+            var developers = "";
+            for (i = 0; i < dataAsObj.options.userProjectOptions.length; i++) {
+                if (dataAsObj.options.userProjectOptions[i].project == selectProject.value) {
+                    developers += "<option>" + dataAsObj.options.userProjectOptions[i].username + "</option>";
+                }
+            }
+            selectDeveloper.innerHTML = developers;
+        }
+    })(document, window);
+</script>

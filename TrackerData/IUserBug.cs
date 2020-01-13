@@ -17,6 +17,7 @@ namespace BugTracker.Data
         bool RemoveTeamFromProject(Team team, Project project);
         bool RemoveUserFromProject(ApplicationUser user, Project project);
         IEnumerable<UserProject> GetAllUserProjects();
+        IEnumerable<UserProject> GetAllUserProjectsByUser(ApplicationUser user);
         bool AssignUserToTeam(ApplicationUser user, string teamName);
         void AddTeam(Team newTeam);
         void DeleteTeam(Team toDelete);

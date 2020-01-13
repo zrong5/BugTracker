@@ -79,7 +79,7 @@ namespace BugTracker.Controllers
                                     .Select(u => u.UserName),
                 ProjectOptions = (await _userBug.GetAllProjectByUserAsync(currentUser).ConfigureAwait(false))
                                     .Select(proj => proj.Name),
-                UserProjectOptions = _userBug.GetAllUserProjects().Select(result => new UserProjectModel
+                UserProjectOptions = _userBug.GetAllUserProjectsByUser(currentUser).Select(result => new UserProjectModel
                 {
                     Username = result.User.UserName,
                     Project = result.Project.Name

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using BugTracker.Data;
 using BugTracker.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace BugTracker.Controllers
 {
@@ -27,23 +28,33 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             SubmissionOptionsModel options = null;
-            var user = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name)
+                .ConfigureAwait(false);
+
             if (User.IsInRole("Admin"))
             {
                 options = new SubmissionOptionsModel()
                 {
-                    ProjectOptions = _bug.GetAllProjects(),
-                    TeamOptions = _bug.GetAllTeams(),
-                    UrgencyOptions = _bug.GetAllUrgencies()
+                    ProjectOptions = _bug.GetAllProjects().Select(proj => proj.Name),
+                    TeamOptions = _bug.GetAllTeams().Select(team => team.Name),
+                    UrgencyOptions = _bug.GetAllUrgencies().Select(urgency => urgency.Level)
                 };
             }
             else if (User.IsInRole("Manager"))
             {
                 options = new SubmissionOptionsModel()
                 {
-                    ProjectOptions = await _userBug.GetAllProjectByUserAsync(user).ConfigureAwait(false),
-                    TeamMemberOptions = await _userBug.GetAllTeamMembersAsync(user).ConfigureAwait(false),
-                    UrgencyOptions = _bug.GetAllUrgencies()
+                    ProjectOptions = (await _userBug.GetAllProjectByUserAsync(currentUser)
+                                        .ConfigureAwait(false))
+                                        .Select(proj => proj.Name),
+                    UserProjectOptions = _userBug.GetAllUserProjectsByUser(currentUser)
+                                        .Select(result => new UserProjectModel
+                                         {
+                                            Username = result.User.UserName,
+                                            Project = result.Project.Name
+                                         }),
+                    UrgencyOptions = _bug.GetAllUrgencies().Select(urgency => urgency.Level)
+
                 };
             }
             
@@ -68,8 +79,8 @@ namespace BugTracker.Controllers
                     Urgency = _bug.GetUrgencyByName(model.Urgency),
                     Title = model.Title,
                     Owner = _bug.GetTeamByName(model.Team),
-                    AssignedTo = model.TeamMember == null ? null : 
-                            await _userManager.FindByNameAsync(model.TeamMember).ConfigureAwait(false),
+                    AssignedTo = model.Developer == null ? null : 
+                            await _userManager.FindByNameAsync(model.Developer).ConfigureAwait(false),
                     CreatedOn = now,
                     Description = model.Description,
                     LogDetail = _bug.CreateEmptyLog(),

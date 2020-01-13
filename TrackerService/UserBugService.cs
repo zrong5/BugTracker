@@ -103,6 +103,12 @@ namespace BugTracker.Service
                 .Include(up => up.User);
         }
 
+        public IEnumerable<UserProject> GetAllUserProjectsByUser(ApplicationUser user)
+        {
+            var team = GetTeam(user);
+            return GetAllUserProjects().Where(up => up.Project.Owner == team);
+        }
+
         public async Task<IEnumerable<Project>> GetAllProjectByUserAsync(ApplicationUser user)
         {
             if(await _userManager.IsInRoleAsync(user, "Admin"))
