@@ -58,6 +58,19 @@
                     <label class="control-label" asp-for="CreateModel.ProjectName">Project Name</label>
                     <input type="text" class="form-control" placeholder="Project name.." asp-for="CreateModel.ProjectName">
                 </div>
+                @if (User.IsInRole("Manager"))
+                {
+                    <div class="form-group">
+                        <label asp-for="CreateModel.Developer">Assign To</label>
+                        <select class="form-control" asp-for="CreateModel.Developer">
+                            @foreach (var user in Model.Users)
+                            {
+                                <option>@user</option>
+                            }
+
+                        </select>
+                    </div>
+                }
                 <div class="form-group">
                     <label class="control-label" asp-for="CreateModel.Description">Description</label>
                     <textarea class="form-control" rows="3" asp-for="CreateModel.Description"></textarea>

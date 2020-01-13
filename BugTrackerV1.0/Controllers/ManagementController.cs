@@ -147,8 +147,7 @@ namespace BugTracker.Controllers
                 .Select(result => new ProjectListingModel
                 {
                     Project = result.Name,
-                    Manager = (_userBug.GetManagerAsync(result.Owner).Result)?.FirstName +
-                    (_userBug.GetManagerAsync(result.Owner).Result)?.LastName,
+                    Manager = (_userBug.GetManagerAsync(result.Owner).Result)?.UserName,
                     Team = result.Owner?.Name,
                     Email = (_userBug.GetManagerAsync(result.Owner).Result)?.Email
                 });
@@ -221,17 +220,32 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Manage Projects")]
-        public IActionResult AddProject(ProjectIndexModel model)
+        public async Task<IActionResult> AddProjectAsync(ProjectIndexModel model)
         {
             if (ModelState.IsValid)
             {
                 var createModel = model.CreateModel;
-                var newProject = new Project
+                if (User.IsInRole("Admin"))
                 {
-                    Name = createModel.ProjectName,
-                    Description = createModel.Description
-                };
-                _userBug.AddProject(newProject);
+                    var newProject = new Project
+                    {
+                        Name = createModel.ProjectName,
+                        Description = createModel.Description
+                    };
+                    _userBug.AddProject(newProject);
+                }
+                else
+                {
+                    var assignTo = await _userManager.FindByNameAsync(createModel.Developer);
+                    var newProject = new Project
+                    {
+                        Name = createModel.ProjectName,
+                        Description = createModel.Description,
+                        Owner = (await _userBug.GetAllTeamsByUser(assignTo)).FirstOrDefault()
+                    };
+                    
+                    _userBug.AssignUserToProject(assignTo, newProject);
+                }
             }
             return RedirectToAction("ManageProjects", "Management");
         }
