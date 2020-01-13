@@ -125,7 +125,8 @@
                 {
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col">Assigned To Team</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Assigned To</th>
                             <th scope="col">Manager</th>
                             <th scope="col">Email</th>
                         </tr>
@@ -134,6 +135,7 @@
                         @foreach (var item in Model.TeamProjects)
                         {
                             <tr>
+                                <td>@item.Project</td>
                                 <td>@item.Team</td>
                                 <td>@item.Manager</td>
                                 <td>@item.Email</td>

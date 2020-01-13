@@ -9,6 +9,7 @@
     }
     public class ProjectListingModel
     {
+        public string Project { get; set; }
         public string Manager { get; set; }
         public string Email { get; set; }
         public string Team { get; set; }

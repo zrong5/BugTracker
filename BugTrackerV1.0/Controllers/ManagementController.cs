@@ -146,10 +146,11 @@ namespace BugTracker.Controllers
             var listingModel = allProjects
                 .Select(result => new ProjectListingModel
                 {
-                    Manager = (_userBug.GetManagerAsync(result.Owner).Result).FirstName +
-                    (_userBug.GetManagerAsync(result.Owner).Result).LastName,
-                    Team = result.Owner.Name,
-                    Email = (_userBug.GetManagerAsync(result.Owner).Result).Email
+                    Project = result.Name,
+                    Manager = (_userBug.GetManagerAsync(result.Owner).Result)?.FirstName +
+                    (_userBug.GetManagerAsync(result.Owner).Result)?.LastName,
+                    Team = result.Owner?.Name,
+                    Email = (_userBug.GetManagerAsync(result.Owner).Result)?.Email
                 });
             // list anyone that is not just a submitter
             var model = new ProjectIndexModel
