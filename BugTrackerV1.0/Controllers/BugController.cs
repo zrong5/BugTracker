@@ -66,6 +66,7 @@ namespace BugTracker.Controllers
                 Title = bug.Title,
                 ProgressLog = detail,
                 Project = bug.ProjectAffected?.Name,
+                AssignedTo = bug.AssignedTo?.UserName,
                 Status = bug.Status?.Name,
                 Team = bug.Owner?.Name,
                 Description = bug.Description,

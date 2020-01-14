@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BugTracker.Data.Models;
 
@@ -13,6 +14,7 @@ namespace BugTracker.Data
         Status GetStatusByName(string statusName);
         Team GetTeamByName(string teamName);
         Project GetProjectByName(string projectName);
+        Project GetProjectById(Guid Id);
         Urgency GetUrgencyByName(string urgencyLevel);
         ProcessLog CreateEmptyLog();
         IEnumerable<Status> GetAllStatus();

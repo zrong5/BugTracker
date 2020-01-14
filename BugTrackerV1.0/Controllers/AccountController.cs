@@ -33,12 +33,14 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
-                var user = await _userManager.FindByNameAsync(model.Username);
+                var user = await _userManager.FindByNameAsync(model.Username)
+                    .ConfigureAwait(false);
                 if (user != null)
                 {
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false)
+                            .ConfigureAwait(false);
                     if (signInResult.Succeeded)
                     {
                         return RedirectToAction("Index", "Home");
@@ -59,22 +61,24 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterIndexModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 var user = new ApplicationUser
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    UserName = await _user.CreateUniqueUsernameAsync(model.FirstName, model.LastName),
+                    UserName = await _user.CreateUniqueUsernameAsync(model.FirstName, model.LastName)
+                        .ConfigureAwait(false),
                     Email = model.Email,
                 };
 
-                if (await _user.IsUserUniqueAsync(user))
+                if (await _user.IsUserUniqueAsync(user).ConfigureAwait(false))
                 {
-                    var result = await _userManager.CreateAsync(user, model.Password);
+                    var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
                     if (result.Succeeded)
                     {
-                        var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                        var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false)
+                            .ConfigureAwait(false);
                         if (signInResult.Succeeded)
                         {
                             return RedirectToAction("Index", "Home");
@@ -87,7 +91,7 @@ namespace BugTracker.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync().ConfigureAwait(false);
             return RedirectToAction("Login", "Account");
         }
 
@@ -104,10 +108,10 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(roleName);
+                var user = await _userManager.FindByNameAsync(roleName).ConfigureAwait(false);
                 if (user != null)
                 {
-                    await _signInManager.SignInAsync(user, false);
+                    await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -116,7 +120,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> UserProfile()
         {
             var userName = User.Identity.Name;
-            var currentUser = await _userManager.FindByNameAsync(userName);
+            var currentUser = await _userManager.FindByNameAsync(userName).ConfigureAwait(false);
             // generate new view model to send 
             var model = new UserProfileModel()
             {
@@ -124,7 +128,7 @@ namespace BugTracker.Controllers
                 EmailAddress = currentUser.Email,
                 Team = _user.GetTeamName(currentUser),
                 UserName = userName,
-                Role = await _user.GetAllRolesAsync(currentUser, ',')
+                Role = await _user.GetAllRolesAsync(currentUser, ',').ConfigureAwait(false)
             };
             return View(model);
         }

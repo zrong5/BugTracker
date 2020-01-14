@@ -59,11 +59,11 @@ namespace BugTracker.Controllers
             {
                 if (option == "Assign")
                 {
-                    return await AssignUserToRole(model);
+                    return await AssignUserToRole(model).ConfigureAwait(false);
                 }
                 else
                 {
-                    return await RemoveUserFromRole(model);
+                    return await RemoveUserFromRole(model).ConfigureAwait(false);
                 }
             }
             return RedirectToAction("ManageRoles", "Management");
@@ -72,23 +72,34 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Roles")]
         public async Task<IActionResult> AssignUserToRole(RoleIndexModel model)
         {
-            if(!string.IsNullOrEmpty(model.UpdateModel.User) 
-                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+            if(model != null)
             {
-                var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
-                await _userManager.AddToRoleAsync(user, model.UpdateModel.Role);
+                if (!string.IsNullOrEmpty(model.UpdateModel.User)
+                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+                {
+                    var user = await _userManager.FindByNameAsync(model.UpdateModel.User)
+                        .ConfigureAwait(false);
+                    await _userManager.AddToRoleAsync(user, model.UpdateModel.Role)
+                        .ConfigureAwait(false);
+                }
             }
+            
             return RedirectToAction("ManageRoles", "Management");
         }
 
         [Authorize(Policy = "Manage Roles")]
         public async Task<IActionResult> RemoveUserFromRole(RoleIndexModel model)
         {
-            if (!string.IsNullOrEmpty(model.UpdateModel.User)
-                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+            if (model != null)
             {
-                var user = await _userManager.FindByNameAsync(model.UpdateModel.User);
-                await _userManager.RemoveFromRoleAsync(user, model.UpdateModel.Role);
+                if (!string.IsNullOrEmpty(model.UpdateModel.User)
+                && !string.IsNullOrEmpty(model.UpdateModel.Role))
+                {
+                    var user = await _userManager.FindByNameAsync(model.UpdateModel.User)
+                        .ConfigureAwait(false);
+                    await _userManager.RemoveFromRoleAsync(user, model.UpdateModel.Role)
+                        .ConfigureAwait(false);
+                }
             }
             return RedirectToAction("ManageRoles", "Management");
         }
@@ -101,11 +112,13 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 // create role if it doesn't exists
-                var roleResult = await _roleManager.FindByNameAsync(roleName);
+                var roleResult = await _roleManager.FindByNameAsync(roleName)
+                    .ConfigureAwait(false);
                 if (roleResult == null)
                 {
                     var newRole = new IdentityRole<Guid>(roleName);
-                    await _roleManager.CreateAsync(newRole);
+                    await _roleManager.CreateAsync(newRole)
+                        .ConfigureAwait(false);
                 }
             }
             return RedirectToAction("ManageRoles", "Management");
@@ -118,10 +131,12 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var roleResult = await _roleManager.FindByNameAsync(roleName);
+                var roleResult = await _roleManager.FindByNameAsync(roleName)
+                    .ConfigureAwait(false);
                 if (roleResult != null)
                 {
-                    await _roleManager.DeleteAsync(roleResult);
+                    await _roleManager.DeleteAsync(roleResult)
+                        .ConfigureAwait(false);
                 }
             }
             return RedirectToAction("ManageRoles", "Management");
@@ -131,10 +146,14 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> ManageProjectsAsync()
         {
             var allProjects = _bug.GetAllProjects();
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            var allUsers = await _userBug.GetAllTeamMembersAsync(currentUser);
-            var userProjects = await _userBug.GetGetAllUserProjectsByUserAsync(currentUser);
-            var allTeams = await _userBug.GetAllTeamsByUser(currentUser);
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name)
+                .ConfigureAwait(false);
+            var allUsers = await _userBug.GetAllTeamMembersAsync(currentUser)
+                .ConfigureAwait(false);
+            var userProjects = await _userBug.GetGetAllUserProjectsByUserAsync(currentUser)
+                .ConfigureAwait(false);
+            var allTeams = await _userBug.GetAllTeamsByUser(currentUser)
+                .ConfigureAwait(false);
             var assignedListingModel = userProjects
                 .Select(result => new AssignedProjectListingModel
                 {
@@ -156,7 +175,8 @@ namespace BugTracker.Controllers
             {
                 UserProjects = assignedListingModel,
                 TeamProjects = listingModel,
-                Projects = (await _userBug.GetAllProjectByUserAsync(currentUser)).Select(proj => proj.Name),
+                Projects = (await _userBug.GetAllProjectByUserAsync(currentUser)
+                        .ConfigureAwait(false)).Select(proj => proj.Name),
                 Users = allUsers.Select(user => user.UserName),
                 Teams = allTeams.Select(team => team.Name)
             };
@@ -173,11 +193,11 @@ namespace BugTracker.Controllers
             {
                 if(option == "Assign")
                 {
-                    return await AssignEntityToProjectAsync(model);
+                    return await AssignEntityToProjectAsync(model).ConfigureAwait(false);
                 }
                 else
                 {
-                    return await RemoveEntityFromProjectAsync(model);
+                    return await RemoveEntityFromProjectAsync(model).ConfigureAwait(false);
                 }
             }
             return RedirectToAction("ManageProjects", "Management");
@@ -186,16 +206,20 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Projects")]
         public async Task<IActionResult> AssignEntityToProjectAsync(ProjectIndexModel model)
         {
-            var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
-            if (User.IsInRole("Manager"))
+            if(model != null)
             {
-                var user = await _userManager.FindByNameAsync(model.UpdateModel.Username);
-                _userBug.AssignUserToProject(user, project);
-            }
-            else
-            {
-                var team = _bug.GetTeamByName(model.UpdateModel.Team);
-                _userBug.AssignTeamToProject(team, project);
+                var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
+                if (User.IsInRole("Manager"))
+                {
+                    var user = await _userManager.FindByNameAsync(model.UpdateModel.Username)
+                        .ConfigureAwait(false);
+                    _userBug.AssignUserToProject(user, project);
+                }
+                else
+                {
+                    var team = _bug.GetTeamByName(model.UpdateModel.Team);
+                    _userBug.AssignTeamToProject(team, project);
+                }
             }
             return RedirectToAction("ManageProjects", "Management");
         }
@@ -203,16 +227,20 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Projects")]
         public async Task<IActionResult> RemoveEntityFromProjectAsync(ProjectIndexModel model)
         {
-            var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
-            if (User.IsInRole("Manager"))
+            if(model != null)
             {
-                var user = await _userManager.FindByNameAsync(model.UpdateModel.Username);
-                _userBug.RemoveUserFromProject(user, project);
-            }
-            else
-            {
-                var team = _bug.GetTeamByName(model.UpdateModel.Team);
-                _userBug.RemoveTeamFromProject(team, project);
+                var project = _bug.GetProjectByName(model.UpdateModel.ProjectName);
+                if (User.IsInRole("Manager"))
+                {
+                    var user = await _userManager.FindByNameAsync(model.UpdateModel.Username)
+                        .ConfigureAwait(false);
+                    _userBug.RemoveUserFromProject(user, project);
+                }
+                else
+                {
+                    var team = _bug.GetTeamByName(model.UpdateModel.Team);
+                    _userBug.RemoveTeamFromProject(team, project);
+                }
             }
             return RedirectToAction("ManageProjects", "Management");
         }
@@ -222,7 +250,7 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Manage Projects")]
         public async Task<IActionResult> AddProjectAsync(ProjectIndexModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 var createModel = model.CreateModel;
                 if (User.IsInRole("Admin"))
@@ -236,12 +264,14 @@ namespace BugTracker.Controllers
                 }
                 else
                 {
-                    var assignTo = await _userManager.FindByNameAsync(createModel.Developer);
+                    var assignTo = await _userManager.FindByNameAsync(createModel.Developer)
+                        .ConfigureAwait(false);
                     var newProject = new Project
                     {
                         Name = createModel.ProjectName,
                         Description = createModel.Description,
-                        Owner = (await _userBug.GetAllTeamsByUser(assignTo)).FirstOrDefault()
+                        Owner = (await _userBug.GetAllTeamsByUser(assignTo)
+                            .ConfigureAwait(false)).FirstOrDefault()
                     };
                     
                     _userBug.AssignUserToProject(assignTo, newProject);
@@ -289,13 +319,14 @@ namespace BugTracker.Controllers
         [Authorize(Policy = "Admin Permission")]
         public async Task<IActionResult> AssignTeamsAsync(TeamIndexModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 var updateModel = model.UpdateModel;
                 if (!string.IsNullOrEmpty(updateModel.Username)
                     && !string.IsNullOrEmpty(updateModel.Team))
                 {
-                    var user = await _userManager.FindByNameAsync(updateModel.Username);
+                    var user = await _userManager.FindByNameAsync(updateModel.Username)
+                        .ConfigureAwait(false);
                     var succeeded = _userBug.AssignUserToTeam(user, updateModel.Team);
                     if (succeeded)
                     {

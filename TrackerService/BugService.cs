@@ -150,5 +150,12 @@ namespace BugTracker.Service
             }
             _context.SaveChanges();
         }
+
+        public Project GetProjectById(Guid Id)
+        {
+            return _context.Project
+                .Include(proj => proj.Owner)
+                .FirstOrDefault(proj => proj.Id == Id);
+        }
     }
 }
