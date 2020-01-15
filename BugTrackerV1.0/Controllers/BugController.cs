@@ -38,6 +38,7 @@ namespace BugTracker.Controllers
                     Status = result.Status?.Name,
                     Team = result.Owner?.Name,
                     CreatedOn = result.CreatedOn,
+                    Project = result.ProjectAffected?.Name,
                     AssignedTo = result.AssignedTo == null ? "" : 
                     result.AssignedTo.FirstName + " " 
                         + result.AssignedTo.LastName

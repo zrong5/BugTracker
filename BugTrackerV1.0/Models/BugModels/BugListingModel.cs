@@ -10,6 +10,7 @@ namespace BugTracker.Models.BugModels
         public string AssignedTo { get; set; }
         public string Team { get; set; }
         public string Status { get; set; }
+        public string Project { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

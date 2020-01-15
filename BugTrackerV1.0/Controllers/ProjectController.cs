@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BugTracker.Data;
@@ -28,6 +27,7 @@ namespace BugTracker.Controllers
         {
             var currentUser = await _userManager.FindByNameAsync(User.Identity.Name)
                 .ConfigureAwait(false);
+
             var projectsByUser = await _userBug.GetAllProjectByUserAsync(currentUser)
                 .ConfigureAwait(false);
 
