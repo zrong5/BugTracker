@@ -24,8 +24,11 @@ namespace BugTracker.Service
             if (project != null && user != null)
             {
                 var alreadyAssigned = _context.UserProject
-                .Where(userProj => userProj.User == user && userProj.Project == project)
-                .Any();
+                    .Include(up => up.Project)
+                    .Include(up => up.User)
+                    .Where(userProj => userProj.User == user && userProj.Project == project)
+                    .Any();
+
                 if (!alreadyAssigned)
                 {
                     var userProject = new UserProject
@@ -130,8 +133,10 @@ namespace BugTracker.Service
             if (project != null && user != null)
             {
                 var userProject = _context.UserProject
-                .FirstOrDefault(userProject => userProject.User == user
-                                && userProject.Project == project);
+                    .Include(up => up.Project)
+                    .Include(up => up.User)
+                    .FirstOrDefault(userProject => userProject.User == user
+                                    && userProject.Project == project);
                 _context.Remove(userProject);
                 _context.SaveChanges();
                 return true;
@@ -241,6 +246,15 @@ namespace BugTracker.Service
                 }
             }
             return false;
+        }
+
+        public ApplicationUser GetUserByProject(Project project)
+        {
+            return _context.UserProject
+                .Include(up => up.Project)
+                .Include(up => up.User)
+                .FirstOrDefault(up => up.Project == project)
+                .User;
         }
     }
 }

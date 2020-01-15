@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BugTracker.Data;
 using BugTracker.Data.Models;
+using BugTracker.Models.ProjectModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,17 +31,34 @@ namespace BugTracker.Controllers
             var projectsByUser = await _userBug.GetAllProjectByUserAsync(currentUser)
                 .ConfigureAwait(false);
 
+            var listingModel = projectsByUser.Select(proj => new ProjectListingModel 
+            { 
+                Name = proj.Name,
+                Team = proj.Owner.Name,
+                AssignedTo = _userBug.GetUserByProject(proj).UserName,
+                Id = proj.Id
+            });
 
-            return View();
+            var model = new ProjectIndexModel
+            {
+                ListingModel = listingModel
+            };
+            return View(model);
         }
-        public async Task<IActionResult> DetailAsync(Guid id)
+
+        public IActionResult Detail(Guid id)
         {
-            
-
             var project = _bug.GetProjectById(id);
+            var model = new ProjectDetailModel
+            {
+                AssignedTo = _userBug.GetUserByProject(project).UserName,
+                Description = project.Description,
+                Email = _userBug.GetUserByProject(project).Email,
+                Name = project.Name,
+                Team = project.Owner.Name
+            };
 
-
-            return View();
+            return View(model);
         }
     }
 }

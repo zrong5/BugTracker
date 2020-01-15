@@ -1,7 +1,40 @@
-﻿
+﻿@model BugTracker.Models.ProjectModels.ProjectDetailModel
 @{
     ViewData["Title"] = "Detail";
 }
 
-<h1>Detail</h1>
-
+    <div class="row justify-content-center" style="margin-top:15px">
+        <div class="col-8">
+            <div class="card bg-light">
+                <div class="card-header bg-dark text-light">
+                    Project Detail
+                </div>
+                <div style="padding:15px">
+                    <div class="form-group">
+                        <label asp-for="Name">Project Name</label>
+                        <p class="lead">@Model.Name</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Assigned To Team</label>
+                        <p class="lead">@Model.Team</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Team">Team</label>
+                        <p class="lead">@Model.Team</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AssignedTo">Assigned Developer</label>
+                        <p class="lead">@Model.AssignedTo</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Developer Email</label>
+                        <p class="lead">@Model.Email</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description">Description</label>
+                        <p class="lead">@Model.Description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

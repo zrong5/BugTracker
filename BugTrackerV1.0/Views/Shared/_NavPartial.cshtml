@@ -26,6 +26,10 @@
     {
         <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Bug" asp-action="Index">My Tickets</a>
     }
+    @if ((await AuthorizationService.AuthorizeAsync(User, "Developer Permission")).Succeeded)
+    {
+        <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Project" asp-action="Index">My Projects</a>
+    }
     @if ((await AuthorizationService.AuthorizeAsync(User, "View Profile")).Succeeded)
     {
         <a class="list-group-item list-group-item-action bg-dark text-light" asp-controller="Account" asp-action="UserProfile">User Profile</a>
